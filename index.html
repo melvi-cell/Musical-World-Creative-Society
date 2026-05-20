@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MWCS | Kenya's Premier Music Festival Consultants</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="global.js"></script>
+    <style>
+        .marketing-hero {
+            background: linear-gradient(135deg, #0f172a, #1e5a8a);
+            border-radius: 24px;
+            padding: 50px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .marketing-hero::before {
+            content: "♪ ♫ ♪";
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            font-size: 120px;
+            opacity: 0.1;
+            color: white;
+        }
+        .marketing-hero h1 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .marketing-hero p {
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+        .trust-badge {
+            display: inline-flex;
+            gap: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 25px;
+            border-radius: 50px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        .feature-card {
+            text-align: center;
+            padding: 25px;
+            background: var(--bg-light-dark);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--primary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        .feature-icon i { font-size: 1.5rem; color: white; }
+        .cta-banner {
+            background: linear-gradient(135deg, var(--accent-orange), var(--primary-blue));
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .marketing-hero h1 { font-size: 1.5rem; }
+            .marketing-hero { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="center-page" style="display: block; padding: 20px;">
+    <!-- MARKETING HERO SECTION -->
+    <div class="marketing-hero">
+        <h1>Transform Your School into a <span style="color: var(--accent-orange);">Music Festival Champion</span> 🎵</h1>
+        <p>Join 45+ schools across Kenya that trust MWCS for expert scriptwriting, professional directing, and award-winning performances at the Kenya National Music Festival.</p>
+        <div class="trust-badge">
+            <span><i class="fas fa-trophy"></i> 12 National Awards</span>
+            <span><i class="fas fa-school"></i> 45+ Schools Served</span>
+            <span><i class="fas fa-star"></i> 97% Success Rate</span>
+        </div>
+    </div>
+
+    <!-- FEATURE GRID -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-feather-alt"></i></div>
+            <h4>Professional Scriptwriting</h4>
+            <p style="font-size:0.8rem;">Original, award-winning scripts tailored for your school</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-chalkboard-user"></i></div>
+            <h4>Expert Directing</h4>
+            <p style="font-size:0.8rem;">Guidance from seasoned festival directors</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-microphone-alt"></i></div>
+            <h4>Performance Coaching</h4>
+            <p style="font-size:0.8rem;">Voice, stage presence, and confidence training</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h4>Proven Track Record</h4>
+            <p style="font-size:0.8rem;">97% of our schools advance to Nationals</p>
+        </div>
+    </div>
+
+    <!-- LOGIN/SIGNUP FORM (Original functionality) -->
+    <div class="form-wrapper" style="max-width: 550px; margin: 0 auto;">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="form-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+                <h1 class="form-title">MWCS Portal</h1>
+                <p class="form-subtitle">Musical World Creative Society</p>
+                <p class="form-subtitle" style="font-size: 0.8rem;">Kenya Music Festival 2026</p>
+            </div>
+            
+            <div class="tab-container">
+                <button class="tab-btn active" id="loginTabBtn">Login</button>
+                <button class="tab-btn" id="signupTabBtn">Register School</button>
+            </div>
+            
+            <!-- LOGIN -->
+            <div id="loginFormContainer" class="tab-pane active">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="loginEmail" placeholder="school@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-gradient btn-full">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                <div id="loginMessage"></div>
+            </div>
+            
+            <!-- SIGNUP -->
+            <div id="signupFormContainer" class="tab-pane">
+                <form id="signupForm">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="signupProgress" style="width: 0%;"></div>
+                    </div>
+                    
+                    <div id="step1" class="form-section">
+                        <h3><i class="fas fa-school"></i> School Information</h3>
+                        <div class="form-group">
+                            <label>School Name *</label>
+                            <input type="text" id="schoolName" placeholder="Isiolo Girls' High School" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Region *</label>
+                            <select id="region" required>
+                                <option value="">Select Region</option>
+                                <option>Central</option><option>Coast</option><option>Eastern</option>
+                                <option>Nairobi</option><option>North Eastern</option><option>Nyanza</option>
+                                <option>Rift Valley</option><option>Western</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Principal Name *</label>
+                                <input type="text" id="principalName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone *</label>
+                                <input type="tel" id="phone" placeholder="0712345678" required>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-primary" id="nextStep1Btn">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    
+                    <div id="step2" style="display: none;">
+                        <h3><i class="fas fa-user-circle"></i> Account Details</h3>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="signupEmail" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Password *</label>
+                                <input type="password" id="signupPassword" placeholder="Min 6 characters" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password *</label>
+                                <input type="password" id="confirmPassword" required>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn-outline" id="prevStep2Btn"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button type="button" class="btn-primary" id="nextStep2Btn">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div id="step3" style="display: none;">
+                        <h3><i class="fas fa-shield-alt"></i> Verification</h3>
+                        <div class="captcha-container">
+                            <span class="captcha-text" id="captchaText">A3F9K2</span>
+                            <button type="button" class="btn-outline-sm" id="refreshCaptchaBtn"><i class="fas fa-sync-alt"></i></button>
+                            <input type="text" id="captchaInput" placeholder="Enter CAPTCHA">
+                        </div>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" id="agreeTerms"> I agree to Terms & Conditions</label>
+                        </div>
+                        <div class="info-banner">
+                            <i class="fas fa-info-circle"></i>
+                            <div>After registration, check your email to verify your account.</div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn-outline" id="prevStep3Btn"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button type="submit" class="btn-gradient">Complete Registration <i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <div id="signupMessage"></div>
+            </div>
+            
+            <div class="form-footer">
+                <button class="dark-mode-btn" onclick="toggleTheme()" style="width: 100%; margin-bottom: 15px;">
+                    <i class="fas fa-moon"></i> <i class="fas fa-sun"></i> Switch Theme
+                </button>
+                <p>© 2026 Musical World Creative Society</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA BANNER -->
+    <div class="cta-banner">
+        <h3 style="color: white;">Ready to take your school to the Nationals?</h3>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 15px;">Join the 45+ schools already working with MWCS</p>
+        <button class="btn-primary" onclick="document.getElementById('signupTabBtn').click()" style="background: white; color: var(--primary-blue);">Register Your School Today →</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-links" style="margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h4>MWCS</h4>
+            <p style="font-size:0.8rem;">Musical World Creative Society</p>
+            <p style="font-size:0.7rem;">© 2026 All Rights Reserved</p>
+        </div>
+        <div>
+            <h4>Contact</h4>
+            <p style="font-size:0.8rem;"><i class="fas fa-phone"></i> +254 741 417 587</p>
+            <p style="font-size:0.8rem;"><i class="fas fa-envelope"></i> 1musicalworldCreative@gmail.com</p>
+        </div>
+        <div>
+            <h4>Follow Us</h4>
+            <div class="social-icons" style="display: flex; gap: 10px;">
+                <a href="#" style="width: 35px; height: 35px; background: var(--bg-light-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="width: 35px; height: 35px; background: var(--bg-light-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="width: 35px; height: 35px; background: var(--bg-light-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyARJrCy-uXM-sYyEpG2uZ8Sj5FBBDK1f9M",
+        authDomain: "mwcs-b2e0e.firebaseapp.com",
+        projectId: "mwcs-b2e0e",
+        storageBucket: "mwcs-b2e0e.firebasestorage.app",
+        messagingSenderId: "216297038440",
+        appId: "1:216297038440:web:cb685e4c7a5422f90711dd",
+        measurementId: "G-F0NL59LBSJ"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    const loginBtn = document.getElementById('loginTabBtn');
+    const signupBtn = document.getElementById('signupTabBtn');
+    const loginContainer = document.getElementById('loginFormContainer');
+    const signupContainer = document.getElementById('signupFormContainer');
+    
+    function switchTab(tab) {
+        if (tab === 'login') {
+            loginContainer.classList.add('active');
+            signupContainer.classList.remove('active');
+            loginBtn.classList.add('active');
+            signupBtn.classList.remove('active');
+        } else {
+            loginContainer.classList.remove('active');
+            signupContainer.classList.add('active');
+            loginBtn.classList.remove('active');
+            signupBtn.classList.add('active');
+            currentStep = 1;
+            updateProgress();
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+        }
+    }
+    
+    loginBtn.onclick = () => switchTab('login');
+    signupBtn.onclick = () => switchTab('signup');
+    
+    let currentStep = 1;
+    function updateProgress() {
+        const progress = (currentStep - 1) * 33.33;
+        const progressBar = document.getElementById('signupProgress');
+        if (progressBar) progressBar.style.width = progress + '%';
+    }
+    
+    const nextStep1Btn = document.getElementById('nextStep1Btn');
+    const nextStep2Btn = document.getElementById('nextStep2Btn');
+    const prevStep2Btn = document.getElementById('prevStep2Btn');
+    const prevStep3Btn = document.getElementById('prevStep3Btn');
+    
+    nextStep1Btn.onclick = function() {
+        const schoolName = document.getElementById('schoolName').value;
+        const region = document.getElementById('region').value;
+        const principalName = document.getElementById('principalName').value;
+        const phone = document.getElementById('phone').value;
+        if (!schoolName || !region || !principalName || !phone) {
+            alert('Please fill all school information fields');
+            return;
+        }
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('step3').style.display = 'none';
+        currentStep = 2;
+        updateProgress();
+    };
+    
+    nextStep2Btn.onclick = function() {
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        if (!email || !password) {
+            alert('Please enter email and password');
+            return;
+        }
+        if (password !== confirm) {
+            alert('Passwords do not match');
+            return;
+        }
+        if (password.length < 6) {
+            alert('Password must be at least 6 characters');
+            return;
+        }
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'block';
+        currentStep = 3;
+        updateProgress();
+    };
+    
+    prevStep2Btn.onclick = function() {
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'none';
+        currentStep = 1;
+        updateProgress();
+    };
+    
+    prevStep3Btn.onclick = function() {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('step3').style.display = 'none';
+        currentStep = 2;
+        updateProgress();
+    };
+    
+    function generateCaptcha() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+        let captcha = '';
+        for (let i = 0; i < 6; i++) {
+            captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return captcha;
+    }
+    
+    const refreshCaptchaBtn = document.getElementById('refreshCaptchaBtn');
+    const captchaText = document.getElementById('captchaText');
+    
+    function refreshCaptcha() {
+        captchaText.innerText = generateCaptcha();
+    }
+    
+    refreshCaptchaBtn.onclick = refreshCaptcha;
+    refreshCaptcha();
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const messageDiv = document.getElementById('loginMessage');
+        
+        messageDiv.innerHTML = '<div class="alert-warning"><i class="fas fa-spinner fa-spin"></i> Logging in...</div>';
+        
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            if (!user.emailVerified) {
+                messageDiv.innerHTML = '<div class="alert-warning">⚠️ Please verify your email first.</div>';
+                return;
+            }
+            
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const role = userDoc.data()?.role || 'school';
+            
+            localStorage.setItem('userId', user.uid);
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('userEmail', email);
+            
+            window.location.href = role === 'admin' ? 'admin.html' : 'dashboard.html';
+            
+        } catch (error) {
+            let errorMsg = error.message;
+            if (error.code === 'auth/user-not-found') errorMsg = 'No account found';
+            if (error.code === 'auth/wrong-password') errorMsg = 'Incorrect password';
+            messageDiv.innerHTML = `<div class="alert-error">${errorMsg}</div>`;
+        }
+    });
+    
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const schoolName = document.getElementById('schoolName').value;
+        const region = document.getElementById('region').value;
+        const principalName = document.getElementById('principalName').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const captchaInput = document.getElementById('captchaInput').value;
+        const captchaTextValue = captchaText.innerText;
+        const agreeTerms = document.getElementById('agreeTerms').checked;
+        const messageDiv = document.getElementById('signupMessage');
+        
+        if (captchaInput !== captchaTextValue) {
+            messageDiv.innerHTML = '<div class="alert-error">Invalid CAPTCHA</div>';
+            refreshCaptcha();
+            return;
+        }
+        
+        if (!agreeTerms) {
+            messageDiv.innerHTML = '<div class="alert-error">Accept Terms & Conditions</div>';
+            return;
+        }
+        
+        messageDiv.innerHTML = '<div class="alert-warning"><i class="fas fa-spinner fa-spin"></i> Creating account...</div>';
+        
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            await sendEmailVerification(user);
+            
+            await setDoc(doc(db, 'schools', user.uid), {
+                schoolId: user.uid,
+                schoolName: schoolName,
+                region: region,
+                principalName: principalName,
+                phone: phone,
+                email: email,
+                currentMile: 1,
+                contractStatus: 'pending',
+                balance: 0,
+                totalPaid: 0,
+                registeredAt: new Date().toISOString()
+            });
+            
+            await setDoc(doc(db, 'users', user.uid), {
+                email: email,
+                role: 'school',
+                schoolId: user.uid,
+                createdAt: new Date().toISOString()
+            });
+            
+            messageDiv.innerHTML = '<div class="alert-success">✅ Registration successful! Check your email to verify.</div>';
+            
+            setTimeout(() => {
+                switchTab('login');
+                document.getElementById('loginEmail').value = email;
+                messageDiv.innerHTML = '';
+            }, 3000);
+            
+        } catch (error) {
+            let errorMsg = error.message;
+            if (error.code === 'auth/email-already-in-use') errorMsg = 'Email already registered';
+            messageDiv.innerHTML = `<div class="alert-error">${errorMsg}</div>`;
+        }
+    });
+</script>
+</body>
+</html>
