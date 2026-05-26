@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWCS | Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-100">
+
+  <div class="max-w-7xl mx-auto p-6">
+    
+    <!-- Login Section -->
+    <div id="loginSection" class="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
+      <div id="loginForm">
+        <div class="text-center mb-6">
+          <i class="fas fa-shield-alt text-5xl text-orange-600 mb-3"></i>
+          <h2 class="text-xl font-bold">Admin Login</h2>
+          <p class="text-gray-500 text-sm mt-1">MWCS Admin Portal</p>
+        </div>
+        <input type="email" id="loginEmail" placeholder="Admin Email" class="w-full p-3 border rounded-xl mb-3">
+        <input type="password" id="loginPassword" placeholder="Password" class="w-full p-3 border rounded-xl mb-4">
+        <button onclick="adminLogin()" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-xl font-semibold transition">
+          <i class="fas fa-sign-in-alt mr-2"></i> Login
+        </button>
+        <div class="text-center mt-4"><p class="text-xs text-gray-500">Contact system administrator for access</p></div>
+      </div>
+      <div id="authMessage" class="mt-4 hidden"></div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div id="dashboardSection" class="hidden">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">🎵 MWCS Admin Dashboard</h1>
+        <div class="flex gap-3">
+          <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition text-sm"><i class="fas fa-download mr-2"></i> Export CSV</button>
+          <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition text-sm"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+          <a href="index.html" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition text-sm"><i class="fas fa-home mr-2"></i> Back to Site</a>
+        </div>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="grid md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-orange-500"><p class="text-gray-500 text-sm">Total Enrollments</p><p class="text-3xl font-bold" id="enrollmentCount">0</p></div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-blue-500"><p class="text-gray-500 text-sm">Total Schools</p><p class="text-3xl font-bold" id="schoolCount">0</p></div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-green-500"><p class="text-gray-500 text-sm">Active Submissions</p><p class="text-3xl font-bold" id="totalCount">0</p></div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-purple-500"><p class="text-gray-500 text-sm">This Week</p><p class="text-3xl font-bold" id="weeklyCount">0</p></div>
+      </div>
+      
+      <!-- Filter Bar -->
+      <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
+        <div class="flex flex-wrap gap-3 items-center justify-between">
+          <div class="flex gap-3 flex-wrap">
+            <input type="text" id="searchInput" placeholder="Search by school name or email..." class="px-3 py-2 border rounded-lg w-64 text-sm focus:ring-2 focus:ring-orange-400 outline-none">
+            <select id="statusFilter" class="px-3 py-2 border rounded-lg text-sm">
+              <option value="all">All Status</option>
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Approved">Approved</option>
+            </select>
+            <button onclick="clearFilters()" class="px-3 py-2 bg-gray-200 rounded-lg text-sm">Clear Filters</button>
+          </div>
+          <div class="text-sm text-gray-500"><span id="filteredCount">0</span> results</div>
+        </div>
+      </div>
+      
+      <!-- Enrollments Table -->
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b">
+              <tr><th class="px-4 py-3 text-left">School Name</th><th class="px-4 py-3 text-left">Principal</th><th class="px-4 py-3 text-left">Email</th><th class="px-4 py-3 text-left">Phone</th><th class="px-4 py-3 text-left">Region</th><th class="px-4 py-3 text-left">Date</th><th class="px-4 py-3 text-left">Status</th><th class="px-4 py-3 text-center">Actions</th></tr>
+            </thead>
+            <tbody id="enrollmentsTableBody"><tr><td colspan="8" class="text-center py-8 text-gray-500">Loading enrollments...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyARJrCy-uXM-sYyEpG2uZ8Sj5FBBDK1f9M",
+      authDomain: "mwcs-b2e0e.firebaseapp.com",
+      projectId: "mwcs-b2e0e",
+      storageBucket: "mwcs-b2e0e.firebasestorage.app",
+      messagingSenderId: "216297038440",
+      appId: "1:216297038440:web:cb685e4c7a5422f90711dd"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    let allEnrollments = [];
+    
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.remove('hidden');
+        loadData();
+      } else {
+        document.getElementById('loginSection').classList.remove('hidden');
+        document.getElementById('dashboardSection').classList.add('hidden');
+      }
+    });
+    
+    async function adminLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        showMessage('Login successful!');
+      } catch (error) {
+        showMessage(error.message, true);
+      }
+    }
+    
+    async function loadData() {
+      const snapshot = await db.collection('enrollments').orderBy('timestamp', 'desc').get();
+      allEnrollments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      document.getElementById('enrollmentCount').innerText = allEnrollments.length;
+      document.getElementById('totalCount').innerText = allEnrollments.length;
+      
+      const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+      let weekly = allEnrollments.filter(e => e.dateSubmitted && new Date(e.dateSubmitted) > weekAgo).length;
+      document.getElementById('weeklyCount').innerText = weekly;
+      
+      renderTable();
+    }
+    
+    function renderTable() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+      let filtered = allEnrollments;
+      if (searchTerm) filtered = filtered.filter(e => (e.schoolName && e.schoolName.toLowerCase().includes(searchTerm)) || (e.email && e.email.toLowerCase().includes(searchTerm)));
+      if (statusFilter !== 'all') filtered = filtered.filter(e => e.status === statusFilter);
+      document.getElementById('filteredCount').innerText = filtered.length;
+      
+      const tbody = document.getElementById('enrollmentsTableBody');
+      if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-500">No enrollments found</td></tr>'; return; }
+      
+      tbody.innerHTML = filtered.map(e => `
+        <tr class="border-b hover:bg-gray-50">
+          <td class="px-4 py-3 font-medium">${e.schoolName || '-'}</td>
+          <td class="px-4 py-3">${e.principalName || '-'}</td>
+          <td class="px-4 py-3">${e.email || '-'}</td>
+          <td class="px-4 py-3">${e.phone || '-'}</td>
+          <td class="px-4 py-3">${e.region || '-'}</td>
+          <td class="px-4 py-3 text-xs">${e.dateSubmitted?.slice(0,10) || '-'}</td>
+          <td class="px-4 py-3"><select onchange="updateStatus('${e.id}', this.value)" class="px-2 py-1 rounded-full text-xs font-semibold"><option value="New" ${e.status === 'New' ? 'selected' : ''}>🟡 New</option><option value="Contacted" ${e.status === 'Contacted' ? 'selected' : ''}>🔵 Contacted</option><option value="Approved" ${e.status === 'Approved' ? 'selected' : ''}>🟢 Approved</option></select></td>
+          <td class="px-4 py-3 text-center"><button onclick="deleteEnrollment('${e.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>
+      `).join('');
+    }
+    
+    async function updateStatus(id, status) { await db.collection('enrollments').doc(id).update({ status: status }); loadData(); }
+    async function deleteEnrollment(id) { if (confirm('Delete this enrollment?')) { await db.collection('enrollments').doc(id).delete(); loadData(); } }
+    function clearFilters() { document.getElementById('searchInput').value = ''; document.getElementById('statusFilter').value = 'all'; renderTable(); }
+    function exportCSV() { let csv = "School Name,Principal,Email,Phone,Region,Date,Status\n"; allEnrollments.forEach(e => csv += `"${e.schoolName || ''}","${e.principalName || ''}","${e.email || ''}","${e.phone || ''}","${e.region || ''}","${e.dateSubmitted?.slice(0,10) || ''}","${e.status || ''}"\n`); const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'mwcs_enrollments.csv'; a.click(); URL.revokeObjectURL(url); alert('CSV exported!'); }
+    function logout() { auth.signOut(); }
+    function showMessage(text, isError = false) { const msgDiv = document.getElementById('authMessage'); msgDiv.innerHTML = `<div class="p-3 rounded-lg ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${text}</div>`; msgDiv.classList.remove('hidden'); setTimeout(() => msgDiv.classList.add('hidden'), 3000); }
+    
+    document.getElementById('searchInput').addEventListener('keyup', renderTable);
+    document.getElementById('statusFilter').addEventListener('change', renderTable);
+  </script>
+</body>
+</html>
