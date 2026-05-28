@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWCS | The Pioneer - Eliud Macharia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gold-gradient { background: linear-gradient(135deg, #C9A03D 0%, #E4C06E 40%, #F9E2A1 100%); }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navigation (same pattern) -->
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md">
+    <div class="max-w-7xl mx-auto px-5 py-3">
+      <div class="flex justify-between items-center flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="flex items-center gap-2">
+            <i class="fas fa-music text-2xl text-orange-600"></i>
+            <span class="font-black text-xl text-gray-800">MWCS<span class="text-orange-600">.</span></span>
+          </a>
+        </div>
+        <div class="hidden md:flex gap-2 text-sm font-semibold items-center flex-wrap">
+          <a href="index.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white">🏠 Home</a>
+          <a href="about.html" class="px-4 py-2 rounded-full transition shadow-sm bg-blue-600 text-white">📖 About</a>
+          <a href="services.html" class="px-4 py-2 rounded-full transition shadow-sm bg-indigo-600 text-white">🎵 Services</a>
+          <a href="pedigree.html" class="px-4 py-2 rounded-full transition shadow-sm bg-purple-600 text-white">🏆 Pedigree</a>
+          <a href="investment.html" class="px-4 py-2 rounded-full transition shadow-sm bg-teal-600 text-white">💰 Investment</a>
+          <a href="pioneer.html" class="px-4 py-2 rounded-full transition shadow-sm bg-rose-600 text-white">👑 The Pioneer</a>
+          <a href="places.html" class="px-4 py-2 rounded-full transition shadow-sm bg-cyan-600 text-white">📍 Places</a>
+          <a href="enroll.html" class="px-4 py-2 rounded-full transition shadow-sm bg-amber-600 text-white">⭐ Enroll</a>
+          <a href="dashboard.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden text-orange-800 text-2xl"><i class="fas fa-bars"></i></button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">...</div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-5 py-12">
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-12" data-aos="fade-up">
+      <div>
+        <div class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-4">
+          <i class="fas fa-crown mr-1"></i> Founder & CEO
+        </div>
+        <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">Eliud <span class="gold-gradient bg-clip-text text-transparent">Macharia</span></h1>
+        <div class="w-20 h-1 bg-orange-500 rounded-full mb-4"></div>
+        <p class="text-gray-600 text-lg leading-relaxed">Visionary leader | Music Festival Consultant | Award-winning Director</p>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"><i class="fas fa-chalkboard-user mr-1"></i> 15+ Years Experience</span>
+          <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"><i class="fas fa-trophy mr-1"></i> 12 National Awards</span>
+          <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"><i class="fas fa-music mr-1"></i> Master Director</span>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <div class="relative">
+          <div class="absolute -inset-4 gold-gradient rounded-full opacity-20 blur-xl"></div>
+          <div class="relative w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center shadow-2xl">
+            <i class="fas fa-user-tie text-8xl text-white opacity-80"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-12" data-aos="fade-up">
+      <div class="bg-gradient-to-r from-orange-800 to-orange-900 px-6 py-4">
+        <h2 class="text-2xl font-bold text-white"><i class="fas fa-book-open mr-2"></i> The MWCS Origin Story</h2>
+      </div>
+      <div class="p-6 md:p-8 space-y-6 text-gray-700 leading-relaxed">
+        <p class="first-letter:text-5xl first-letter:font-bold first-letter:text-orange-700 first-letter:mr-2 first-letter:float-left">Long before the bright lights of the Kenya National Music Festival stage, Eliud Macharia walked the corridors of Kenyan schools witnessing a recurring challenge. Brilliant young performers with raw talent but lacking the professional guidance needed to shine on the national stage.</p>
+        <p>As a young music educator, Eliud saw students with incredible potential fall short simply because they lacked structured training, quality scripts, and professional directing. The festival circuit was unforgiving to those without proper mentorship.</p>
+        <p>This spark of indignation became the foundation for MWCS (Musical World Creative Society). Eliud didn't just want to teach students how to perform; he wanted to give them the tools to win.</p>
+        <div class="bg-orange-50 p-5 rounded-xl italic border-l-4 border-orange-500 my-6">
+          <i class="fas fa-quote-left text-orange-400 mr-2"></i>
+          "Every school has a champion inside. They just need someone to unlock it."
+        </div>
+        <p>Today, under Eliud's leadership, MWCS has transformed over 45 schools across Kenya, producing 12 national award winners and maintaining a 97% advancement rate to the National Music Festival.</p>
+        <p class="font-bold text-orange-800 text-lg mt-4">Eliud Macharia has taken the heavy silence of untapped potential and orchestrated it into a roaring chorus of confident, award-winning performers. The festival stage may be competitive, but with MWCS, every school has a voice.</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-8 text-center shadow-lg" data-aos="fade-up">
+      <i class="fas fa-chalkboard-user text-5xl text-orange-600 mb-4"></i>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">Train Under the Pioneer Himself</h3>
+      <p class="text-gray-500 mb-6">Learn from a coach who has led 45+ schools to festival excellence</p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="enroll.html" class="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-8 py-3 rounded-full font-semibold hover:from-orange-700 hover:to-orange-800 transition shadow-md inline-flex items-center gap-2"><i class="fas fa-rocket"></i> Enroll Your School</a>
+        <a href="https://wa.me/254741417587" class="border-2 border-orange-600 text-orange-700 px-8 py-3 rounded-full font-semibold hover:bg-orange-50 transition inline-flex items-center gap-2"><i class="fab fa-whatsapp"></i> Book Consultation</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-5 text-center">
+      <p>© 2026 MWCS — Musical World Creative Society</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 800 });
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
