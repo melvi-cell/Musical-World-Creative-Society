@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWCS | Our Locations & Contact</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navigation (same pattern) -->
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md">
+    <div class="max-w-7xl mx-auto px-5 py-3">
+      <div class="flex justify-between items-center flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="flex items-center gap-2">
+            <i class="fas fa-music text-2xl text-orange-600"></i>
+            <span class="font-black text-xl text-gray-800">MWCS<span class="text-orange-600">.</span></span>
+          </a>
+        </div>
+        <div class="hidden md:flex gap-2 text-sm font-semibold items-center flex-wrap">
+          <a href="index.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white">🏠 Home</a>
+          <a href="about.html" class="px-4 py-2 rounded-full transition shadow-sm bg-blue-600 text-white">📖 About</a>
+          <a href="services.html" class="px-4 py-2 rounded-full transition shadow-sm bg-indigo-600 text-white">🎵 Services</a>
+          <a href="pedigree.html" class="px-4 py-2 rounded-full transition shadow-sm bg-purple-600 text-white">🏆 Pedigree</a>
+          <a href="investment.html" class="px-4 py-2 rounded-full transition shadow-sm bg-teal-600 text-white">💰 Investment</a>
+          <a href="pioneer.html" class="px-4 py-2 rounded-full transition shadow-sm bg-rose-600 text-white">👑 The Pioneer</a>
+          <a href="places.html" class="px-4 py-2 rounded-full transition shadow-sm bg-cyan-600 text-white">📍 Places</a>
+          <a href="enroll.html" class="px-4 py-2 rounded-full transition shadow-sm bg-amber-600 text-white">⭐ Enroll</a>
+          <a href="dashboard.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden text-orange-800 text-2xl"><i class="fas fa-bars"></i></button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">...</div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-5 py-12">
+    <div class="text-center mb-12" data-aos="fade-up">
+      <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-4">Our <span class="text-orange-600">Locations</span></h1>
+      <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full mb-6"></div>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">Serving schools across all regions of Kenya</p>
+    </div>
+
+    <!-- Stats Banner -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white rounded-2xl p-5 shadow-md text-center mb-12" data-aos="fade-up">
+      <div><div class="text-2xl font-bold text-orange-700">8</div><div class="text-xs text-gray-500">Regions Served</div></div>
+      <div class="border-l border-gray-200"><div class="text-2xl font-bold text-orange-700">45+</div><div class="text-xs text-gray-500">Schools Partnered</div></div>
+      <div class="border-l border-gray-200"><div class="text-2xl font-bold text-orange-700">24/7</div><div class="text-xs text-gray-500">Support Available</div></div>
+      <div class="border-l border-gray-200"><div class="text-2xl font-bold text-orange-700">15+</div><div class="text-xs text-gray-500">Team Members</div></div>
+    </div>
+
+    <!-- Regions Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" data-aos="fade-up">
+      <div class="bg-white rounded-2xl p-6 shadow-md text-center">
+        <i class="fas fa-map-marker-alt text-3xl text-orange-600 mb-3"></i>
+        <h3 class="font-bold">Nairobi Region</h3>
+        <p class="text-gray-500 text-sm">Headquarters & Central Office</p>
+        <p class="text-xs text-gray-400 mt-2">Frin Plaza, 2nd Floor, Thika Road</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md text-center">
+        <i class="fas fa-map-marker-alt text-3xl text-orange-600 mb-3"></i>
+        <h3 class="font-bold">Rift Valley Region</h3>
+        <p class="text-gray-500 text-sm">Satellite Office</p>
+        <p class="text-xs text-gray-400 mt-2">Eldoret, Nakuru, Kericho</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md text-center">
+        <i class="fas fa-map-marker-alt text-3xl text-orange-600 mb-3"></i>
+        <h3 class="font-bold">Coast Region</h3>
+        <p class="text-gray-500 text-sm">Satellite Office</p>
+        <p class="text-xs text-gray-400 mt-2">Mombasa, Malindi, Kilifi</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md text-center">
+        <i class="fas fa-map-marker-alt text-3xl text-orange-600 mb-3"></i>
+        <h3 class="font-bold">Eastern Region</h3>
+        <p class="text-gray-500 text-sm">Satellite Office</p>
+        <p class="text-xs text-gray-400 mt-2">Embu, Meru, Machakos</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md text-center">
+        <i class="fas fa-map-marker-alt text-3xl text-orange-600 mb-3"></i>
+        <h3 class="font-bold">Western Region</h3>
+        <p class="text-gray-500 text-sm">Satellite Office</p>
+        <p class="text-xs text-gray-400 mt-2">Kisumu, Kakamega, Bungoma</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md text-center">
+        <i class="fas fa-map-marker-alt text-3xl text-orange-600 mb-3"></i>
+        <h3 class="font-bold">Nyanza Region</h3>
+        <p class="text-gray-500 text-sm">Satellite Office</p>
+        <p class="text-xs text-gray-400 mt-2">Kisii, Homa Bay, Migori</p>
+      </div>
+    </div>
+
+    <!-- Contact Card -->
+    <div class="bg-gradient-to-r from-orange-800 to-orange-900 rounded-2xl p-8 text-white text-center" data-aos="zoom-in">
+      <i class="fas fa-headset text-4xl text-orange-300 mb-4"></i>
+      <h3 class="text-2xl font-bold mb-4">Contact Our Team</h3>
+      <div class="flex flex-wrap justify-center gap-6 mb-6">
+        <div><i class="fas fa-phone-alt mr-2"></i> <a href="tel:+254741417587" class="hover:text-orange-300">+254 741 417 587</a></div>
+        <div><i class="fas fa-envelope mr-2"></i> <a href="mailto:musicalworldcreative@gmail.com" class="hover:text-orange-300">musicalworldcreative@gmail.com</a></div>
+        <div><i class="fab fa-whatsapp mr-2"></i> <a href="https://wa.me/254741417587" class="hover:text-orange-300">WhatsApp Chat</a></div>
+      </div>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="enroll.html" class="bg-white text-orange-900 px-6 py-2 rounded-full font-semibold hover:bg-orange-100 transition">Enroll Your School →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-5 text-center">
+      <p>© 2026 MWCS — Musical World Creative Society</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 800 });
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>
