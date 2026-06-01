@@ -20,7 +20,7 @@
         .status-rejected { background: #fee2e2; color: #dc2626; }
         .status-new { background: #dbeafe; color: #2563eb; }
         .status-contacted { background: #e0e7ff; color: #4338ca; }
-        .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 0.7rem; margin: 0 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
+        .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 0.7rem; margin: 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; border: none; }
         .action-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
         .toast { position: fixed; bottom: 20px; right: 20px; background: #1f2937; color: white; padding: 12px 24px; border-radius: 12px; z-index: 1000; animation: slideIn 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -40,6 +40,7 @@
         .progress-bar-fill { background: linear-gradient(90deg, #e68a2e, #f59e0b); height: 100%; border-radius: 9999px; transition: width 0.5s ease; }
         .overflow-x-auto { overflow-x: auto; }
         .receipt-preview { max-width: 300px; max-height: 200px; object-fit: contain; }
+        .status-select { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; border: none; cursor: pointer; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -116,7 +117,18 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="data-table w-full">
-                        <thead><tr><th>School</th><th>Amount</th><th>Method</th><th>Reference</th><th>Date</th><th>Receipt</th><th>Status</th><th>Actions</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>School</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Receipt</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
                         <tbody id="paymentsTableBody">...</tbody>
                     </table>
                 </div>
@@ -185,7 +197,7 @@
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="data-table w-full">
-                        <thead><tr><th>School</th><th>Principal</th><th>Email</th><th>Phone</th><th>Region</th><th>Package</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <thead><td><th>School</th><th>Principal</th><th>Email</th><th>Phone</th><th>Region</th><th>Package</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
                         <tbody id="enrollmentsTableBody">...</tbody>
                     </table>
                 </div>
@@ -239,6 +251,18 @@
         <div class="mb-3"><label class="block text-sm font-medium mb-1">Script URL</label><input type="url" id="scriptUrl" class="edit-input" placeholder="https://drive.google.com/..."></div>
         <div class="mb-3"><label class="block text-sm font-medium mb-1">Script Title/Genre</label><input type="text" id="scriptGenre" class="edit-input" placeholder="e.g., Drama, Choral Verse"></div>
         <div class="flex gap-3"><button onclick="saveScriptAssignment()" class="bg-orange-600 text-white px-4 py-2 rounded-lg flex-1">Assign</button><button onclick="closeAssignModal()" class="bg-gray-300 px-4 py-2 rounded-lg flex-1">Cancel</button></div>
+    </div>
+</div>
+
+<div id="editPaymentStatusModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+        <h2 class="text-xl font-bold mb-4">✏️ Edit Payment Status</h2>
+        <input type="hidden" id="editPaymentId">
+        <input type="hidden" id="editPaymentSchoolId">
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Payment Amount</label><input type="text" id="editPaymentAmount" class="edit-input" readonly style="background:#f3f4f6"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">School</label><input type="text" id="editPaymentSchool" class="edit-input" readonly style="background:#f3f4f6"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Status</label><select id="editPaymentStatusSelect" class="edit-input"><option value="pending">⏳ Pending</option><option value="approved">✅ Approved</option><option value="rejected">❌ Rejected</option></select></div>
+        <div class="flex gap-3"><button onclick="savePaymentStatusEdit()" class="bg-orange-600 text-white px-4 py-2 rounded-lg flex-1">Save Changes</button><button onclick="closeEditPaymentModal()" class="bg-gray-300 px-4 py-2 rounded-lg flex-1">Cancel</button></div>
     </div>
 </div>
 
@@ -325,7 +349,7 @@
     
     async function loadDeletedItems() { const snapshot = await db.collection('deleted_items').orderBy('deletedAt', 'desc').get(); allDeleted = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderRecycleBin(); }
 
-    // ==================== PAYMENTS RENDER (Base64 Receipt Support) ====================
+    // ==================== PAYMENTS RENDER (With Enhanced Actions) ====================
     function renderPayments() {
         const search = document.getElementById('searchPayments')?.value.toLowerCase() || '';
         const statusFilter = document.getElementById('filterPaymentStatus')?.value || 'all';
@@ -334,7 +358,82 @@
         document.getElementById('pendingCountDisplay').innerText = allPayments.filter(p => p.status === 'pending').length;
         const tbody = document.getElementById('paymentsTableBody');
         if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-500">No payments found</td>' + '</tr>'; return; }
-        tbody.innerHTML = filtered.map(p => `<tr><td class="font-medium">${p.schoolName || '-'}</td><td class="font-bold text-orange-600">Ksh ${(p.amount || 0).toLocaleString()}</td><td>${p.paymentMethod || '-'}</td><td><code class="text-xs bg-gray-100 px-2 py-1 rounded">${p.reference || 'N/A'}</code></td><td class="text-xs">${p.paymentDate ? new Date(p.paymentDate).toLocaleString() : '-'}</td><td>${p.receiptBase64 ? `<img src="${p.receiptBase64}" class="receipt-img" onclick="viewReceipt('${p.receiptBase64}')" title="View Receipt">` : '<span class="text-gray-400 text-xs">No receipt</span>'}</td><td><span class="status-badge ${p.status === 'approved' ? 'status-approved' : p.status === 'rejected' ? 'status-rejected' : 'status-pending'}">${p.status === 'approved' ? '✅ Approved' : p.status === 'rejected' ? '❌ Rejected' : '⏳ Pending'}</span></td><td>${p.status === 'pending' ? `<button onclick="approvePayment('${p.id}', '${p.schoolId}', ${p.amount})" class="action-btn bg-green-500 text-white"><i class="fas fa-check"></i> Approve</button><button onclick="rejectPayment('${p.id}', '${p.schoolId}')" class="action-btn bg-red-500 text-white"><i class="fas fa-times"></i> Reject</button>` : ''}<button onclick="viewPaymentDetails('${p.id}')" class="action-btn bg-blue-500 text-white"><i class="fas fa-info-circle"></i> Details</button></td></tr>`).join('');
+        
+        tbody.innerHTML = filtered.map(p => `
+            <tr>
+                <td class="font-medium">${p.schoolName || '-'}</td>
+                <td class="font-bold text-orange-600">Ksh ${(p.amount || 0).toLocaleString()}</td>
+                <td>${p.paymentMethod || '-'}</td>
+                <td><code class="text-xs bg-gray-100 px-2 py-1 rounded">${p.reference || 'N/A'}</code></td>
+                <td class="text-xs">${p.paymentDate ? new Date(p.paymentDate).toLocaleString() : '-'}</td>
+                <td>${p.receiptBase64 ? `<img src="${p.receiptBase64}" class="receipt-img" onclick="viewReceipt('${p.receiptBase64}')" title="View Receipt">` : '<span class="text-gray-400 text-xs">No receipt</span>'}</td>
+                <td><span class="status-badge ${p.status === 'approved' ? 'status-approved' : p.status === 'rejected' ? 'status-rejected' : 'status-pending'}">${p.status === 'approved' ? '✅ Approved' : p.status === 'rejected' ? '❌ Rejected' : '⏳ Pending'}</span></td>
+                <td>
+                    <div class="flex flex-wrap gap-1">
+                        ${p.status === 'pending' ? `
+                            <button onclick="approvePayment('${p.id}', '${p.schoolId}', ${p.amount})" class="action-btn bg-green-500 text-white"><i class="fas fa-check"></i> Approve</button>
+                            <button onclick="rejectPayment('${p.id}', '${p.schoolId}')" class="action-btn bg-red-500 text-white"><i class="fas fa-times"></i> Reject</button>
+                        ` : ''}
+                        <button onclick="openEditPaymentModal('${p.id}', '${p.schoolId}', '${p.schoolName}', ${p.amount}, '${p.status}')" class="action-btn bg-orange-500 text-white"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="viewPaymentDetails('${p.id}')" class="action-btn bg-blue-500 text-white"><i class="fas fa-info-circle"></i> Details</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // Edit Payment Status Modal Functions
+    let currentEditPaymentId = null;
+    let currentEditSchoolId = null;
+    
+    function openEditPaymentModal(paymentId, schoolId, schoolName, amount, currentStatus) {
+        currentEditPaymentId = paymentId;
+        currentEditSchoolId = schoolId;
+        document.getElementById('editPaymentId').value = paymentId;
+        document.getElementById('editPaymentSchoolId').value = schoolId;
+        document.getElementById('editPaymentAmount').value = `Ksh ${amount.toLocaleString()}`;
+        document.getElementById('editPaymentSchool').value = schoolName;
+        document.getElementById('editPaymentStatusSelect').value = currentStatus;
+        document.getElementById('editPaymentStatusModal').classList.remove('hidden');
+        document.getElementById('editPaymentStatusModal').classList.add('flex');
+    }
+    
+    function closeEditPaymentModal() {
+        document.getElementById('editPaymentStatusModal').classList.add('hidden');
+    }
+    
+    async function savePaymentStatusEdit() {
+        const paymentId = document.getElementById('editPaymentId').value;
+        const schoolId = document.getElementById('editPaymentSchoolId').value;
+        const newStatus = document.getElementById('editPaymentStatusSelect').value;
+        
+        if (!confirm(`Change payment status to ${newStatus.toUpperCase()}?`)) return;
+        
+        try {
+            await db.collection('schools').doc(schoolId).collection('payments').doc(paymentId).update({ 
+                status: newStatus, 
+                updatedAt: new Date().toISOString() 
+            });
+            
+            // If approving, update school's total paid
+            if (newStatus === 'approved') {
+                const payment = allPayments.find(p => p.id === paymentId);
+                if (payment) {
+                    const schoolDoc = await db.collection('schools').doc(schoolId).get();
+                    const currentTotal = schoolDoc.data()?.totalPaid || 0;
+                    await db.collection('schools').doc(schoolId).update({ 
+                        totalPaid: currentTotal + (payment.amount || 0),
+                        balance: Math.max(0, (schoolDoc.data()?.balance || 0) - (payment.amount || 0))
+                    });
+                }
+            }
+            
+            closeEditPaymentModal();
+            await loadAllData();
+            showToast(`Payment status updated to ${newStatus}`, 'success');
+        } catch (error) {
+            showToast('Error updating status: ' + error.message, 'error');
+        }
     }
 
     // ==================== SCHOOLS RENDER ====================
@@ -345,7 +444,7 @@
         let filtered = allSchools.filter(s => (!search || s.schoolName?.toLowerCase().includes(search)) && (regionFilter === 'all' || s.region === regionFilter) && (contractFilter === 'all' || s.contractStatus === contractFilter));
         document.getElementById('totalSchools').innerText = allSchools.length;
         const tbody = document.getElementById('schoolsTableBody');
-        if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8">No schools found</td></tr>'; return; }
+        if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8">No schools found</td></table>'; return; }
         tbody.innerHTML = filtered.map(s => `<tr><td class="font-medium">${s.schoolName || '-'}</td><td>${s.principalName || '-'}</td><td>${s.email || '-'}</td><td>${s.phone || '-'}</td><td>${s.region || '-'}</td><td><span class="status-badge ${(s.currentMile || 1) >= 4 ? 'status-approved' : 'status-pending'}">Mile ${s.currentMile || 1}/4</span></td><td><span class="status-badge ${s.contractStatus === 'approved' ? 'status-approved' : 'status-pending'}">${s.contractStatus === 'approved' ? '✅ Approved' : '⏳ Pending'}</span></td><td>Ksh ${(s.totalPaid || 0).toLocaleString()}</td><td><button onclick="openEditSchoolModal('${s.id}')" class="action-btn bg-orange-500 text-white"><i class="fas fa-edit"></i> Edit</button></td></tr>`).join('');
     }
 
@@ -376,7 +475,7 @@
         let filtered = allEnrollments.filter(e => (!search || e.schoolName?.toLowerCase().includes(search) || e.email?.toLowerCase().includes(search)) && (statusFilter === 'all' || e.status === statusFilter) && (regionFilter === 'all' || e.region === regionFilter));
         const tbody = document.getElementById('enrollmentsTableBody');
         if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8">No enrollments found</td></tr>'; return; }
-        tbody.innerHTML = filtered.map(e => `<tr><td class="font-medium">${e.schoolName || '-'}</td><td class="font-medium">${e.principalName || '-'}</td><td class="font-medium">${e.email || '-'}</td><td class="font-medium">${e.phone || '-'}</td><td class="font-medium">${e.region || '-'}<td><td class="text-xs">${e.programInterest || '-'}<td><td class="text-xs">${e.dateSubmitted?.slice(0,10) || '-'}</td><td class="px-4 py-3"><select onchange="updateEnrollmentStatus('${e.id}', this.value)" class="px-2 py-1 rounded-full text-xs font-semibold"><option value="New" ${e.status === 'New' ? 'selected' : ''}>🟡 New</option><option value="Contacted" ${e.status === 'Contacted' ? 'selected' : ''}>🔵 Contacted</option><option value="Approved" ${e.status === 'Approved' ? 'selected' : ''}>🟢 Approved</option><option value="Rejected" ${e.status === 'Rejected' ? 'selected' : ''}>🔴 Rejected</option></select></td><td class="px-4 py-3"><button onclick="viewEnrollmentDetails('${e.id}')" class="action-btn bg-blue-500 text-white"><i class="fas fa-eye"></i> View</button> </td></tr>`).join('');
+        tbody.innerHTML = filtered.map(e => `<tr><td class="font-medium">${e.schoolName || '-'}</td><td>${e.principalName || '-'}</td><td>${e.email || '-'}</td><td>${e.phone || '-'}</td><td>${e.region || '-'}</td><td class="text-xs">${e.programInterest || '-'}</td><td class="text-xs">${e.dateSubmitted?.slice(0,10) || '-'}</td><td><select onchange="updateEnrollmentStatus('${e.id}', this.value)" class="status-select ${e.status === 'Approved' ? 'status-approved' : e.status === 'Contacted' ? 'status-contacted' : e.status === 'Rejected' ? 'status-rejected' : 'status-pending'}"><option value="New" ${e.status === 'New' ? 'selected' : ''}>🟡 New</option><option value="Contacted" ${e.status === 'Contacted' ? 'selected' : ''}>🔵 Contacted</option><option value="Approved" ${e.status === 'Approved' ? 'selected' : ''}>🟢 Approved</option><option value="Rejected" ${e.status === 'Rejected' ? 'selected' : ''}>🔴 Rejected</option></select></td><td><button onclick="viewEnrollmentDetails('${e.id}')" class="action-btn bg-blue-500 text-white"><i class="fas fa-eye"></i> View</button></td></tr>`).join('');
     }
 
     async function updateEnrollmentStatus(id, status) { await db.collection('enrollments').doc(id).update({ status: status, updatedAt: new Date().toISOString() }); loadEnrollments(); showToast(`Status updated to ${status}`, 'success'); }
@@ -443,10 +542,6 @@
     function downloadCSV(csv, filename) { const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
     function refreshAllData() { loadAllData(); showToast('All data refreshed', 'success'); }
     function switchToTab(tabId) { document.querySelector(`.tab-btn[data-tab="${tabId}"]`).click(); }
-    function refreshPayments() { loadPayments(); }
-    function refreshScripts() { loadScripts(); }
-    function clearSchoolFilters() { document.getElementById('searchSchools').value = ''; document.getElementById('filterSchoolRegion').value = 'all'; document.getElementById('filterContractStatus').value = 'all'; renderSchools(); }
-    function clearProgressFilters() { document.getElementById('searchProgress').value = ''; document.getElementById('filterProgressMile').value = 'all'; renderProgress(); }
     function updateStats() { document.getElementById('totalSchools').innerText = allSchools.length; }
     function logout() { auth.signOut(); showToast('Logged out', 'success'); }
     function showToast(msg, type) { const toast = document.createElement('div'); toast.className = `toast ${type === 'error' ? 'bg-red-600' : 'bg-green-600'}`; toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle'} mr-2"></i>${msg}`; document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000); }
