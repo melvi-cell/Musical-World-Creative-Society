@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWCS | Our Services - Professional Music Festival Consultancy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .service-card {
+      transition: all 0.3s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.15);
+    }
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #e68a2e, #f59e0b);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .tab-btn {
+      transition: all 0.3s ease;
+    }
+    .tab-btn.active {
+      background: #e68a2e;
+      color: white;
+    }
+    .pricing-table th, .pricing-table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .pricing-table th {
+      background: #f97316;
+      color: white;
+    }
+    .services-hero {
+      background-image: url('NEW IMG.jpeg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .services-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+      border-radius: 2rem;
+    }
+    .stat-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e68a2e, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navigation with Round Logo -->
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md">
+    <div class="max-w-7xl mx-auto px-5 py-3">
+      <div class="flex justify-between items-center flex-wrap gap-3">
+        <!-- Logo Area with Round Professional Logo -->
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="flex items-center gap-3 group">
+            <div class="relative">
+              <img src="LOGO1.png" alt="MWCS Logo" class="w-12 h-12 rounded-full object-cover shadow-md group-hover:scale-105 transition-transform duration-300">
+              <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white"></div>
+            </div>
+            <div class="hidden sm:block">
+              <span class="font-black text-xl text-gray-800 tracking-tight">MWCS<span class="text-orange-600">.</span></span>
+              <p class="text-[10px] text-gray-400 -mt-1 leading-tight">Musical World<br>Creative Society</p>
+            </div>
+          </a>
+        </div>
+        
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex gap-2 text-sm font-semibold items-center flex-wrap">
+          <a href="index.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white">🏠 Home</a>
+          <a href="about.html" class="px-4 py-2 rounded-full transition shadow-sm bg-blue-600 text-white">📖 About</a>
+          <a href="services.html" class="px-4 py-2 rounded-full transition shadow-sm bg-indigo-600 text-white">🎵 Services</a>
+          <a href="pedigree.html" class="px-4 py-2 rounded-full transition shadow-sm bg-purple-600 text-white">🏆 Pedigree</a>
+          <a href="investment.html" class="px-4 py-2 rounded-full transition shadow-sm bg-teal-600 text-white">💰 Investment</a>
+          <a href="pioneer.html" class="px-4 py-2 rounded-full transition shadow-sm bg-rose-600 text-white">👑 The Pioneer</a>
+          <a href="places.html" class="px-4 py-2 rounded-full transition shadow-sm bg-cyan-600 text-white">📍 Places</a>
+          <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+        </div>
+        
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuBtn" class="md:hidden text-orange-800 text-2xl"><i class="fas fa-bars"></i></button>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
+        <a href="index.html" class="bg-gray-600 text-white text-center px-4 py-2 rounded-full">🏠 Home</a>
+        <a href="about.html" class="bg-blue-600 text-white text-center px-4 py-2 rounded-full">📖 About</a>
+        <a href="services.html" class="bg-indigo-600 text-white text-center px-4 py-2 rounded-full">🎵 Services</a>
+        <a href="pedigree.html" class="bg-purple-600 text-white text-center px-4 py-2 rounded-full">🏆 Pedigree</a>
+        <a href="investment.html" class="bg-teal-600 text-white text-center px-4 py-2 rounded-full">💰 Investment</a>
+        <a href="pioneer.html" class="bg-rose-600 text-white text-center px-4 py-2 rounded-full">👑 The Pioneer</a>
+        <a href="places.html" class="bg-cyan-600 text-white text-center px-4 py-2 rounded-full">📍 Places</a>
+        <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="bg-gray-600 text-white text-center px-4 py-2 rounded-full"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-5 py-12">
+    <!-- Hero Section with Background -->
+    <div class="text-center mb-16 services-hero rounded-2xl p-12 relative" data-aos="fade-up">
+      <div class="relative z-10">
+        <h1 class="text-5xl md:text-6xl font-black text-white mb-4">Our <span class="text-orange-400">Services</span></h1>
+        <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full mb-6"></div>
+        <p class="text-gray-200 text-lg max-w-2xl mx-auto">Comprehensive end-to-end festival consultancy for Kenyan schools</p>
+      </div>
+    </div>
+
+    <!-- Service Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16" data-aos="fade-up">
+      <div class="text-center bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+        <div class="stat-circle mx-auto">
+          <i class="fas fa-feather-alt text-3xl text-white"></i>
+        </div>
+        <div class="text-2xl font-bold text-orange-600 mt-3">50+</div>
+        <p class="text-sm text-gray-500">Original Scripts Written</p>
+      </div>
+      <div class="text-center bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+        <div class="stat-circle mx-auto">
+          <i class="fas fa-chalkboard-user text-3xl text-white"></i>
+        </div>
+        <div class="text-2xl font-bold text-orange-600 mt-3">200+</div>
+        <p class="text-sm text-gray-500">Directing Sessions</p>
+      </div>
+      <div class="text-center bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+        <div class="stat-circle mx-auto">
+          <i class="fas fa-microphone-alt text-3xl text-white"></i>
+        </div>
+        <div class="text-2xl font-bold text-orange-600 mt-3">500+</div>
+        <p class="text-sm text-gray-500">Students Coached</p>
+      </div>
+      <div class="text-center bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+        <div class="stat-circle mx-auto">
+          <i class="fas fa-trophy text-3xl text-white"></i>
+        </div>
+        <div class="text-2xl font-bold text-orange-600 mt-3">12</div>
+        <p class="text-sm text-gray-500">National Awards</p>
+      </div>
+    </div>
+
+    <!-- Service Categories Tabs -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12" data-aos="fade-up">
+      <button class="tab-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition active" data-category="all">All Services</button>
+      <button class="tab-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-category="scripting">📝 Scriptwriting</button>
+      <button class="tab-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-category="directing">🎭 Directing</button>
+      <button class="tab-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-category="coaching">🎤 Coaching</button>
+      <button class="tab-btn px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-category="production">⚙️ Production</button>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8" data-aos="fade-up">
+      
+      <!-- Scriptwriting Service -->
+      <div id="scriptwriting" class="service-card bg-white rounded-2xl p-8 shadow-md border border-gray-100" data-service="scripting">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-feather-alt text-2xl text-orange-600"></i>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-2">Professional Scriptwriting</h2>
+            <p class="text-gray-600 mb-4">Original, award-winning scripts tailored for your school's unique strengths and festival categories.</p>
+            <div class="bg-orange-50 rounded-xl p-4 mb-4">
+              <p class="font-semibold text-orange-800 mb-2">What's Included:</p>
+              <ul class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Custom scripts for all genres</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Set Books adaptations</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Original compositions</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Traditional narratives</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Royalty-free rights</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> 7-14 day turnaround</li>
+              </ul>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-orange-600 font-bold">From Ksh 12,000</span>
+              <button class="text-orange-600 text-sm hover:underline" onclick="showSampleScript()">View Sample →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expert Directing -->
+      <div id="directing" class="service-card bg-white rounded-2xl p-8 shadow-md border border-gray-100" data-service="directing">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-chalkboard-user text-2xl text-orange-600"></i>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-2">Expert Directing</h2>
+            <p class="text-gray-600 mb-4">Guidance from seasoned festival directors with national-level winning experience.</p>
+            <div class="bg-orange-50 rounded-xl p-4 mb-4">
+              <p class="font-semibold text-orange-800 mb-2">What's Included:</p>
+              <ul class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> On-site rehearsals</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Virtual direction available</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Blocking & movement</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Character development</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Mock festival sessions</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Director's notes</li>
+              </ul>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-orange-600 font-bold">From Ksh 5,000/item</span>
+              <button class="text-orange-600 text-sm hover:underline" onclick="bookDirector()">Book Director →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Coaching -->
+      <div id="coaching" class="service-card bg-white rounded-2xl p-8 shadow-md border border-gray-100" data-service="coaching">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-microphone-alt text-2xl text-orange-600"></i>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-2">Performance Coaching</h2>
+            <p class="text-gray-600 mb-4">Voice, stage presence, and confidence training to shine under pressure.</p>
+            <div class="bg-orange-50 rounded-xl p-4 mb-4">
+              <p class="font-semibold text-orange-800 mb-2">What's Included:</p>
+              <ul class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Vocal projection</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Diction workshops</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Stage fright management</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Body language mastery</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Ensemble synchronization</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Individual feedback</li>
+              </ul>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-orange-600 font-bold">From Ksh 3,000/session</span>
+              <button class="text-orange-600 text-sm hover:underline" onclick="bookCoaching()">Book Session →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Production Support -->
+      <div id="production" class="service-card bg-white rounded-2xl p-8 shadow-md border border-gray-100" data-service="production">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-calendar-alt text-2xl text-orange-600"></i>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold mb-2">Production Support</h2>
+            <p class="text-gray-600 mb-4">Complete logistical and technical support for festival preparation.</p>
+            <div class="bg-orange-50 rounded-xl p-4 mb-4">
+              <p class="font-semibold text-orange-800 mb-2">What's Included:</p>
+              <ul class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Costume design advice</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Set design consultation</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Prop sourcing</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Sound & lighting advice</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Festival day coordination</li>
+                <li><i class="fas fa-check-circle text-orange-500 mr-2"></i> Registration assistance</li>
+              </ul>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-orange-600 font-bold">Custom Quote</span>
+              <button class="text-orange-600 text-sm hover:underline" onclick="requestQuote()">Request Quote →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing Comparison Table -->
+    <div class="mt-16" data-aos="fade-up">
+      <h2 class="text-2xl font-bold text-center mb-8">Service <span class="text-orange-600">Packages</span> Comparison</h2>
+      <div class="overflow-x-auto">
+        <table class="pricing-table w-full border-collapse bg-white rounded-xl overflow-hidden shadow-lg">
+          <thead>
+            <tr>
+              <th class="p-4 text-left bg-orange-600 text-white">Service</th>
+              <th class="p-4 text-center bg-orange-500 text-white">Basic</th>
+              <th class="p-4 text-center bg-orange-600 text-white">Standard</th>
+              <th class="p-4 text-center bg-orange-700 text-white">Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b"><td class="p-4 font-semibold">Scriptwriting</td><td class="p-4 text-center">1 item</td><td class="p-4 text-center">3 items</td><td class="p-4 text-center">Unlimited</td></tr>
+            <tr class="border-b bg-gray-50"><td class="p-4 font-semibold">Directing Sessions</td><td class="p-4 text-center">2 sessions</td><td class="p-4 text-center">6 sessions</td><td class="p-4 text-center">12+ sessions</td></tr>
+            <tr class="border-b"><td class="p-4 font-semibold">Coaching Hours</td><td class="p-4 text-center">2 hours</td><td class="p-4 text-center">6 hours</td><td class="p-4 text-center">Unlimited</td></tr>
+            <tr class="border-b bg-gray-50"><td class="p-4 font-semibold">Mock Festival</td><td class="p-4 text-center">-</td><td class="p-4 text-center">✓</td><td class="p-4 text-center">✓ (2x)</td></tr>
+            <tr class="border-b"><td class="p-4 font-semibold">24/7 Support</td><td class="p-4 text-center">Email only</td><td class="p-4 text-center">Email + Phone</td><td class="p-4 text-center">Priority WhatsApp</td></tr>
+            <tr class="bg-orange-50"><td class="p-4 font-bold">Price (per term)</td><td class="p-4 text-center font-bold">Ksh 15,000</td><td class="p-4 text-center font-bold text-orange-600">Ksh 35,000</td><td class="p-4 text-center font-bold">Ksh 60,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Why Choose Our Services -->
+    <div class="mt-16 bg-gradient-to-r from-orange-50 to-white rounded-2xl p-8" data-aos="fade-up">
+      <h2 class="text-2xl font-bold text-center mb-8">Why Choose <span class="text-orange-600">MWCS Services</span>?</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-xl mt-1"></i><div><h3 class="font-bold">97% Success Rate</h3><p class="text-sm text-gray-500">Our schools consistently advance to National level</p></div></div>
+        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-xl mt-1"></i><div><h3 class="font-bold">15+ Years Experience</h3><p class="text-sm text-gray-500">Led by award-winning festival experts</p></div></div>
+        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-xl mt-1"></i><div><h3 class="font-bold">Proven Track Record</h3><p class="text-sm text-gray-500">12 national awards from partner schools</p></div></div>
+        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-xl mt-1"></i><div><h3 class="font-bold">Affordable Packages</h3><p class="text-sm text-gray-500">Flexible payment plans available</p></div></div>
+        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-xl mt-1"></i><div><h3 class="font-bold">Nationwide Reach</h3><p class="text-sm text-gray-500">Serving all 8 regions of Kenya</p></div></div>
+        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 text-xl mt-1"></i><div><h3 class="font-bold">24/7 Support</h3><p class="text-sm text-gray-500">Dedicated support for every school</p></div></div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-16 bg-white rounded-2xl p-8 shadow-md" data-aos="fade-up">
+      <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked <span class="text-orange-600">Questions</span></h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <div class="mb-4"><button class="flex justify-between items-center w-full text-left font-semibold p-3 bg-gray-50 rounded-lg hover:bg-orange-50 transition" onclick="toggleFAQ(this)"><span>How long does scriptwriting take?</span><i class="fas fa-chevron-down text-orange-500"></i></button><div class="hidden p-3 text-gray-600 text-sm">Standard turnaround is 7-14 days. Rush orders available for an additional fee.</div></div>
+          <div class="mb-4"><button class="flex justify-between items-center w-full text-left font-semibold p-3 bg-gray-50 rounded-lg hover:bg-orange-50 transition" onclick="toggleFAQ(this)"><span>Do you travel to schools outside Thika?</span><i class="fas fa-chevron-down text-orange-500"></i></button><div class="hidden p-3 text-gray-600 text-sm">Yes! We serve schools across all 8 regions of Kenya. Travel costs may apply for on-site sessions.</div></div>
+          <div class="mb-4"><button class="flex justify-between items-center w-full text-left font-semibold p-3 bg-gray-50 rounded-lg hover:bg-orange-50 transition" onclick="toggleFAQ(this)"><span>What's the success rate of MWCS schools?</span><i class="fas fa-chevron-down text-orange-500"></i></button><div class="hidden p-3 text-gray-600 text-sm">97% of our partner schools advance to the National level, with 12 national awards to date.</div></div>
+        </div>
+        <div>
+          <div class="mb-4"><button class="flex justify-between items-center w-full text-left font-semibold p-3 bg-gray-50 rounded-lg hover:bg-orange-50 transition" onclick="toggleFAQ(this)"><span>Can I customize a package?</span><i class="fas fa-chevron-down text-orange-500"></i></button><div class="hidden p-3 text-gray-600 text-sm">Absolutely! Contact us for a bespoke package tailored to your school's specific needs.</div></div>
+          <div class="mb-4"><button class="flex justify-between items-center w-full text-left font-semibold p-3 bg-gray-50 rounded-lg hover:bg-orange-50 transition" onclick="toggleFAQ(this)"><span>Do you offer payment plans?</span><i class="fas fa-chevron-down text-orange-500"></i></button><div class="hidden p-3 text-gray-600 text-sm">Yes, we offer termly and monthly payment options for all packages.</div></div>
+          <div class="mb-4"><button class="flex justify-between items-center w-full text-left font-semibold p-3 bg-gray-50 rounded-lg hover:bg-orange-50 transition" onclick="toggleFAQ(this)"><span>How do I get started?</span><i class="fas fa-chevron-down text-orange-500"></i></button><div class="hidden p-3 text-gray-600 text-sm">Click "Register School" on our homepage or contact us directly to schedule a consultation.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 text-center" data-aos="fade-up">
+      <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="inline-block bg-gradient-to-r from-orange-600 to-orange-700 text-white px-8 py-3 rounded-full font-bold hover:from-orange-700 hover:to-orange-800 transition shadow-md">Get Started →</a>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-5 text-center">
+      <p>© 2026 MWCS — Musical World Creative Society</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 800 });
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => { document.getElementById('mobileMenu').classList.toggle('hidden'); });
+    function toggleFAQ(btn) { const content = btn.nextElementSibling; const icon = btn.querySelector('i'); content.classList.toggle('hidden'); icon.classList.toggle('fa-chevron-down'); icon.classList.toggle('fa-chevron-up'); }
+    function showSampleScript() { alert("Sample script will be available for download soon. Contact us for immediate access."); }
+    function bookDirector() { alert("To book a director, please contact us at +254 741 417587 or email musicalworldcreative@gmail.com"); }
+    function bookCoaching() { alert("Coaching sessions can be booked through your school portal after enrollment."); }
+    function requestQuote() { alert("For a custom quote, please contact our team at +254 741 417587"); }
+    const filterBtns = document.querySelectorAll('.tab-btn');
+    const serviceCards = document.querySelectorAll('.service-card');
+    filterBtns.forEach(btn => { btn.addEventListener('click', () => { const category = btn.dataset.category; filterBtns.forEach(b => b.classList.remove('active', 'bg-orange-500', 'text-white')); btn.classList.add('active', 'bg-orange-500', 'text-white'); serviceCards.forEach(card => { if (category === 'all' || card.dataset.service === category) { card.style.display = 'block'; } else { card.style.display = 'none'; } }); }); });
+    window.clearAndGoToDashboard = function(event) { if (event) event.preventDefault(); localStorage.removeItem('userId'); localStorage.removeItem('schoolName'); sessionStorage.clear(); const toast = document.createElement('div'); toast.className = 'toast-notification'; toast.innerHTML = '<i class="fas fa-shield-alt mr-2"></i>Please login to access the school portal'; document.body.appendChild(toast); setTimeout(() => { toast.style.animation = 'slideOut 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 2000); setTimeout(() => { window.location.href = 'dashboard.html'; }, 100); return false; };
+  </script>
+</body>
+</html>

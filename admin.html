@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWCS | Enterprise Admin Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .stats-card { transition: all 0.3s ease; cursor: pointer; }
+        .stats-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); }
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+        .status-approved { background: #d1fae5; color: #059669; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-rejected { background: #fee2e2; color: #dc2626; }
+        .status-new { background: #dbeafe; color: #2563eb; }
+        .status-contacted { background: #e0e7ff; color: #4338ca; }
+        .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 0.7rem; margin: 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; border: none; }
+        .action-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1f2937; color: white; padding: 12px 24px; border-radius: 12px; z-index: 1000; animation: slideIn 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .tab-btn { transition: all 0.2s; }
+        .tab-btn.active { border-bottom: 2px solid #e68a2e; color: #e68a2e; background: transparent; }
+        .receipt-img { width: 50px; height: 40px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; transition: transform 0.2s; }
+        .receipt-img:hover { transform: scale(1.05); }
+        .edit-input, .filter-input { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; width: 100%; font-size: 0.875rem; background: white; }
+        .edit-input:focus, .filter-input:focus { outline: none; border-color: #e68a2e; ring: 2px solid #e68a2e30; }
+        .modal { transition: opacity 0.2s ease; backdrop-filter: blur(4px); }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        .data-table th { text-align: left; padding: 12px 16px; background: #f8fafc; font-weight: 600; color: #1e293b; border-bottom: 1px solid #e2e8f0; }
+        .data-table td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .data-table tr:hover { background: #fefce8; }
+        .dashboard-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .progress-bar-bg { background: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden; }
+        .progress-bar-fill { background: linear-gradient(90deg, #e68a2e, #f59e0b); height: 100%; border-radius: 9999px; transition: width 0.5s ease; }
+        .overflow-x-auto { overflow-x: auto; }
+        .receipt-preview { max-width: 300px; max-height: 200px; object-fit: contain; }
+        .status-select { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; border: none; cursor: pointer; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<div class="max-w-7xl mx-auto p-6">
+    
+    <!-- Login Section -->
+    <div id="loginSection" class="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="fas fa-shield-alt text-2xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Admin Console</h1>
+            <p class="text-gray-500 text-sm mt-1">MWCS Enterprise Management System</p>
+        </div>
+        <input type="email" id="loginEmail" placeholder="Admin Email" class="edit-input mb-3" value="admin@mwcs.co.ke">
+        <input type="password" id="loginPassword" placeholder="Password" class="edit-input mb-4">
+        <button onclick="adminLogin()" class="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white py-3 rounded-xl font-semibold transition shadow-md">
+            <i class="fas fa-sign-in-alt mr-2"></i> Login
+        </button>
+        <div id="authMessage" class="mt-4 hidden"></div>
+    </div>
+    
+    <!-- Main Dashboard -->
+    <div id="dashboardSection" class="hidden">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">🎵 MWCS Enterprise Admin Console</h1>
+                <p class="text-gray-500 text-sm mt-1">Complete School, Payment, Script & Progress Management System</p>
+            </div>
+            <div class="flex gap-2 flex-wrap">
+                <button onclick="refreshAllData()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm transition"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
+                <button onclick="showReports()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm transition"><i class="fas fa-chart-line mr-1"></i> Reports</button>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm transition"><i class="fas fa-sign-out-alt mr-1"></i> Logout</button>
+                <a href="dashboard.html" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm transition"><i class="fas fa-school mr-1"></i> Portal</a>
+            </div>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+            <div onclick="switchToTab('schools')" class="dashboard-card stats-card border-l-4 border-orange-500 cursor-pointer"><p class="text-gray-500 text-sm">🏫 Total Schools</p><p class="text-2xl font-bold" id="totalSchools">0</p></div>
+            <div onclick="switchToTab('payments')" class="dashboard-card stats-card border-l-4 border-yellow-500 cursor-pointer"><p class="text-gray-500 text-sm">⏳ Pending Payments</p><p class="text-2xl font-bold" id="pendingPaymentsCount">0</p></div>
+            <div onclick="switchToTab('payments')" class="dashboard-card stats-card border-l-4 border-green-500 cursor-pointer"><p class="text-gray-500 text-sm">✅ Approved Payments</p><p class="text-2xl font-bold" id="approvedPaymentsCount">0</p></div>
+            <div class="dashboard-card stats-card border-l-4 border-blue-500"><p class="text-gray-500 text-sm">💰 Total Revenue</p><p class="text-2xl font-bold" id="totalRevenue">Ksh 0</p></div>
+            <div onclick="switchToTab('scripts')" class="dashboard-card stats-card border-l-4 border-purple-500 cursor-pointer"><p class="text-gray-500 text-sm">📄 Scripts Assigned</p><p class="text-2xl font-bold" id="scriptsAssignedCount">0</p></div>
+        </div>
+
+        <!-- Main Tabs Navigation -->
+        <div class="bg-white rounded-xl shadow-sm mb-5 overflow-x-auto">
+            <div class="flex border-b min-w-max">
+                <button class="tab-btn py-3 px-5 text-sm font-medium" data-tab="payments"><i class="fas fa-credit-card mr-2"></i> 💳 Payments & Receipts</button>
+                <button class="tab-btn py-3 px-5 text-sm font-medium" data-tab="schools"><i class="fas fa-school mr-2"></i> 🏫 Registered Schools</button>
+                <button class="tab-btn py-3 px-5 text-sm font-medium" data-tab="scripts"><i class="fas fa-file-alt mr-2"></i> 📄 Scripts & Items</button>
+                <button class="tab-btn py-3 px-5 text-sm font-medium" data-tab="progress"><i class="fas fa-chart-line mr-2"></i> 📊 School Progress</button>
+                <button class="tab-btn py-3 px-5 text-sm font-medium" data-tab="enrollments"><i class="fas fa-clipboard-list mr-2"></i> 📋 Enrollments</button>
+                <button class="tab-btn py-3 px-5 text-sm font-medium" data-tab="recycle"><i class="fas fa-trash-alt mr-2"></i> 🗑️ Recycle Bin <span id="recycleBadge" class="ml-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full hidden">0</span></button>
+            </div>
+        </div>
+
+        <!-- ==================== PAYMENTS TAB ==================== -->
+        <div id="tab-payments" class="tab-content">
+            <div class="dashboard-card mb-4">
+                <div class="flex flex-wrap gap-3 justify-between items-center">
+                    <div class="flex gap-2 flex-wrap">
+                        <input type="text" id="searchPayments" placeholder="Search school..." class="filter-input w-64">
+                        <select id="filterPaymentStatus" class="filter-input"><option value="all">All Status</option><option value="pending">⏳ Pending</option><option value="approved">✅ Approved</option><option value="rejected">❌ Rejected</option></select>
+                        <select id="filterPaymentMethod" class="filter-input"><option value="all">All Methods</option><option value="M-Pesa">📱 M-Pesa</option><option value="Bank Transfer">🏦 Bank Transfer</option><option value="Cash">💵 Cash</option></select>
+                        <button onclick="exportPaymentsCSV()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm"><i class="fas fa-file-csv mr-1"></i> Export</button>
+                    </div>
+                    <div class="bg-yellow-50 px-4 py-2 rounded-lg"><i class="fas fa-clock text-yellow-600 mr-1"></i> <span id="pendingCountDisplay">0</span> pending approvals</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead>
+                            <tr>
+                                <th>School</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Receipt</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody">...</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SCHOOLS TAB ==================== -->
+        <div id="tab-schools" class="tab-content hidden">
+            <div class="dashboard-card mb-4">
+                <div class="flex flex-wrap gap-3">
+                    <input type="text" id="searchSchools" placeholder="Search school..." class="filter-input w-64">
+                    <select id="filterSchoolRegion" class="filter-input"><option value="all">All Regions</option><option>Central</option><option>Coast</option><option>Eastern</option><option>Nairobi</option><option>North Eastern</option><option>Nyanza</option><option>Rift Valley</option><option>Western</option></select>
+                    <select id="filterContractStatus" class="filter-input"><option value="all">All Contracts</option><option value="pending">Pending</option><option value="approved">Approved</option></select>
+                    <button onclick="exportSchoolsCSV()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm"><i class="fas fa-file-csv mr-1"></i> Export</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead><tr><th>School</th><th>Principal</th><th>Email</th><th>Phone</th><th>Region</th><th>Mile</th><th>Contract</th><th>Total Paid</th><th>Actions</th></tr></thead>
+                        <tbody id="schoolsTableBody">...</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SCRIPTS TAB ==================== -->
+        <div id="tab-scripts" class="tab-content hidden">
+            <div class="dashboard-card mb-4">
+                <div class="flex flex-wrap gap-3">
+                    <input type="text" id="searchScripts" placeholder="Search school or script..." class="filter-input w-64">
+                    <button onclick="exportScriptsCSV()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm"><i class="fas fa-file-csv mr-1"></i> Export</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead><tr><th>School</th><th>Item/Genre</th><th>Script URL</th><th>Status</th><th>Assigned Date</th><th>Actions</th></tr></thead>
+                        <tbody id="scriptsTableBody">...</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PROGRESS TAB ==================== -->
+        <div id="tab-progress" class="tab-content hidden">
+            <div class="dashboard-card mb-4">
+                <div class="flex flex-wrap gap-3">
+                    <input type="text" id="searchProgress" placeholder="Search school..." class="filter-input w-64">
+                    <select id="filterProgressMile" class="filter-input"><option value="all">All Miles</option><option value="1">Mile 1: Registration</option><option value="2">Mile 2: Scripting</option><option value="3">Mile 3: Training</option><option value="4">Mile 4: Competition</option></select>
+                </div>
+            </div>
+            <div class="grid gap-4" id="progressCardsContainer"></div>
+        </div>
+
+        <!-- ==================== ENROLLMENTS TAB ==================== -->
+        <div id="tab-enrollments" class="tab-content hidden">
+            <div class="dashboard-card mb-4">
+                <div class="flex flex-wrap gap-3">
+                    <input type="text" id="searchEnrollments" placeholder="Search school or email..." class="filter-input w-64">
+                    <select id="filterEnrollmentStatus" class="filter-input"><option value="all">All Status</option><option value="New">🟡 New</option><option value="Contacted">🔵 Contacted</option><option value="Approved">🟢 Approved</option><option value="Rejected">🔴 Rejected</option></select>
+                    <select id="filterEnrollmentRegion" class="filter-input"><option value="all">All Regions</option><option>Central</option><option>Coast</option><option>Eastern</option><option>Nairobi</option><option>North Eastern</option><option>Nyanza</option><option>Rift Valley</option><option>Western</option></select>
+                    <button onclick="exportEnrollmentsCSV()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm"><i class="fas fa-file-csv mr-1"></i> Export</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead><td><th>School</th><th>Principal</th><th>Email</th><th>Phone</th><th>Region</th><th>Package</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="enrollmentsTableBody">...</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== RECYCLE BIN TAB ==================== -->
+        <div id="tab-recycle" class="tab-content hidden">
+            <div class="bg-red-50 rounded-xl p-4 mb-4 flex justify-between items-center flex-wrap gap-3">
+                <div><i class="fas fa-trash-alt text-red-500 text-xl mr-2"></i><span class="font-semibold">Deleted Items</span><span class="text-sm text-gray-600 ml-2">Items can be restored or permanently deleted</span></div>
+                <button onclick="clearAllDeleted()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm"><i class="fas fa-trash-alt mr-1"></i> Empty Bin</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead><tr><th>Type</th><th>Name</th><th>Details</th><th>Deleted Date</th><th>Actions</th></tr></thead>
+                        <tbody id="recycleTableBody">...</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="receiptModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+        <div class="flex justify-between mb-4"><h2 class="text-xl font-bold">📎 Payment Receipt</h2><button onclick="closeReceiptModal()" class="text-gray-500"><i class="fas fa-times"></i></button></div>
+        <img id="receiptImage" src="" class="receipt-preview w-full rounded-lg border">
+        <div class="text-center mt-4"><button onclick="closeReceiptModal()" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Close</button></div>
+    </div>
+</div>
+
+<div id="editSchoolModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+        <h2 class="text-xl font-bold mb-4">✏️ Edit School</h2>
+        <input type="hidden" id="editSchoolId">
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">School Name</label><input type="text" id="editSchoolName" class="edit-input"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Principal Name</label><input type="text" id="editPrincipalName" class="edit-input"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Phone</label><input type="text" id="editPhone" class="edit-input"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Current Mile</label><select id="editCurrentMile" class="edit-input"><option value="1">Mile 1: Registration</option><option value="2">Mile 2: Scripting</option><option value="3">Mile 3: Training</option><option value="4">Mile 4: Competition</option></select></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Contract Status</label><select id="editContractStatus" class="edit-input"><option value="pending">⏳ Pending</option><option value="approved">✅ Approved</option></select></div>
+        <div class="flex gap-3"><button onclick="saveSchoolEdit()" class="bg-orange-600 text-white px-4 py-2 rounded-lg flex-1">Save</button><button onclick="closeEditModal()" class="bg-gray-300 px-4 py-2 rounded-lg flex-1">Cancel</button></div>
+    </div>
+</div>
+
+<div id="assignScriptModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+        <h2 class="text-xl font-bold mb-4">📄 Assign Script</h2>
+        <input type="hidden" id="assignScriptId"><input type="hidden" id="assignSchoolId">
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Script URL</label><input type="url" id="scriptUrl" class="edit-input" placeholder="https://drive.google.com/..."></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Script Title/Genre</label><input type="text" id="scriptGenre" class="edit-input" placeholder="e.g., Drama, Choral Verse"></div>
+        <div class="flex gap-3"><button onclick="saveScriptAssignment()" class="bg-orange-600 text-white px-4 py-2 rounded-lg flex-1">Assign</button><button onclick="closeAssignModal()" class="bg-gray-300 px-4 py-2 rounded-lg flex-1">Cancel</button></div>
+    </div>
+</div>
+
+<div id="editPaymentStatusModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+        <h2 class="text-xl font-bold mb-4">✏️ Edit Payment Status</h2>
+        <input type="hidden" id="editPaymentId">
+        <input type="hidden" id="editPaymentSchoolId">
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Payment Amount</label><input type="text" id="editPaymentAmount" class="edit-input" readonly style="background:#f3f4f6"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">School</label><input type="text" id="editPaymentSchool" class="edit-input" readonly style="background:#f3f4f6"></div>
+        <div class="mb-3"><label class="block text-sm font-medium mb-1">Status</label><select id="editPaymentStatusSelect" class="edit-input"><option value="pending">⏳ Pending</option><option value="approved">✅ Approved</option><option value="rejected">❌ Rejected</option></select></div>
+        <div class="flex gap-3"><button onclick="savePaymentStatusEdit()" class="bg-orange-600 text-white px-4 py-2 rounded-lg flex-1">Save Changes</button><button onclick="closeEditPaymentModal()" class="bg-gray-300 px-4 py-2 rounded-lg flex-1">Cancel</button></div>
+    </div>
+</div>
+
+<div id="reportsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 modal">
+    <div class="bg-white rounded-2xl p-6 max-w-5xl w-full mx-4 max-h-[85vh] overflow-y-auto">
+        <div class="flex justify-between mb-4"><h2 class="text-xl font-bold">📊 Analytics Reports</h2><button onclick="closeReports()" class="text-gray-500"><i class="fas fa-times"></i></button></div>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div><canvas id="paymentChart"></canvas><p class="text-center text-sm mt-2">Payment Status</p></div>
+            <div><canvas id="enrollmentChart"></canvas><p class="text-center text-sm mt-2">Enrollment Status</p></div>
+            <div><canvas id="regionChart"></canvas><p class="text-center text-sm mt-2">Schools by Region</p></div>
+            <div><canvas id="mileChart"></canvas><p class="text-center text-sm mt-2">Schools by Mile</p></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyARJrCy-uXM-sYyEpG2uZ8Sj5FBBDK1f9M", authDomain: "mwcs-b2e0e.firebaseapp.com", projectId: "mwcs-b2e0e", storageBucket: "mwcs-b2e0e.firebasestorage.app", messagingSenderId: "216297038440", appId: "1:216297038440:web:cb685e4c7a5422f90711dd" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    let allSchools = [], allPayments = [], allScripts = [], allEnrollments = [], allDeleted = [];
+    let charts = {};
+
+    auth.onAuthStateChanged((user) => {
+        if (user && user.email === "admin@mwcs.co.ke") {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            loadAllData();
+        } else {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+        }
+    });
+
+    async function adminLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        if (email !== "admin@mwcs.co.ke") { showToast('Invalid admin credentials', 'error'); return; }
+        try { await auth.signInWithEmailAndPassword(email, password); showToast('Login successful!', 'success'); } catch(e) { showToast(e.message, 'error'); }
+    }
+
+    async function loadAllData() { 
+        await Promise.all([loadSchools(), loadEnrollments(), loadDeletedItems()]);
+        await loadPayments(); 
+        await loadScripts(); 
+        updateStats();
+    }
+    
+    async function loadSchools() { const snapshot = await db.collection('schools').get(); allSchools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderSchools(); renderProgress(); }
+    async function loadEnrollments() { const snapshot = await db.collection('enrollments').orderBy('timestamp', 'desc').get(); allEnrollments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderEnrollments(); }
+    
+    async function loadPayments() { 
+        allPayments = []; 
+        let totalRevenue = 0, approvedCount = 0;
+        for (const school of allSchools) { 
+            const snapshot = await db.collection('schools').doc(school.id).collection('payments').orderBy('paymentDate', 'desc').get(); 
+            snapshot.forEach(doc => { 
+                const payment = { id: doc.id, schoolId: school.id, schoolName: school.schoolName, ...doc.data() };
+                allPayments.push(payment);
+                if(payment.status === 'approved') { totalRevenue += (payment.amount || 0); approvedCount++; }
+            }); 
+        } 
+        document.getElementById('totalRevenue').innerHTML = `Ksh ${totalRevenue.toLocaleString()}`;
+        document.getElementById('approvedPaymentsCount').innerText = approvedCount;
+        document.getElementById('pendingPaymentsCount').innerText = allPayments.filter(p => p.status === 'pending').length;
+        renderPayments(); 
+    }
+    
+    async function loadScripts() { 
+        allScripts = []; 
+        let assignedCount = 0;
+        for (const school of allSchools) { 
+            const snapshot = await db.collection('schools').doc(school.id).collection('items').get(); 
+            snapshot.forEach(doc => { 
+                const script = { id: doc.id, schoolId: school.id, schoolName: school.schoolName, ...doc.data() };
+                allScripts.push(script);
+                if(script.status === 'assigned') assignedCount++;
+            }); 
+        } 
+        document.getElementById('scriptsAssignedCount').innerText = assignedCount;
+        renderScripts(); 
+    }
+    
+    async function loadDeletedItems() { const snapshot = await db.collection('deleted_items').orderBy('deletedAt', 'desc').get(); allDeleted = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); renderRecycleBin(); }
+
+    // ==================== PAYMENTS RENDER (With Enhanced Actions) ====================
+    function renderPayments() {
+        const search = document.getElementById('searchPayments')?.value.toLowerCase() || '';
+        const statusFilter = document.getElementById('filterPaymentStatus')?.value || 'all';
+        const methodFilter = document.getElementById('filterPaymentMethod')?.value || 'all';
+        let filtered = allPayments.filter(p => (!search || p.schoolName?.toLowerCase().includes(search)) && (statusFilter === 'all' || p.status === statusFilter) && (methodFilter === 'all' || p.paymentMethod === methodFilter));
+        document.getElementById('pendingCountDisplay').innerText = allPayments.filter(p => p.status === 'pending').length;
+        const tbody = document.getElementById('paymentsTableBody');
+        if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-gray-500">No payments found</td>' + '</tr>'; return; }
+        
+        tbody.innerHTML = filtered.map(p => `
+            <tr>
+                <td class="font-medium">${p.schoolName || '-'}</td>
+                <td class="font-bold text-orange-600">Ksh ${(p.amount || 0).toLocaleString()}</td>
+                <td>${p.paymentMethod || '-'}</td>
+                <td><code class="text-xs bg-gray-100 px-2 py-1 rounded">${p.reference || 'N/A'}</code></td>
+                <td class="text-xs">${p.paymentDate ? new Date(p.paymentDate).toLocaleString() : '-'}</td>
+                <td>${p.receiptBase64 ? `<img src="${p.receiptBase64}" class="receipt-img" onclick="viewReceipt('${p.receiptBase64}')" title="View Receipt">` : '<span class="text-gray-400 text-xs">No receipt</span>'}</td>
+                <td><span class="status-badge ${p.status === 'approved' ? 'status-approved' : p.status === 'rejected' ? 'status-rejected' : 'status-pending'}">${p.status === 'approved' ? '✅ Approved' : p.status === 'rejected' ? '❌ Rejected' : '⏳ Pending'}</span></td>
+                <td>
+                    <div class="flex flex-wrap gap-1">
+                        ${p.status === 'pending' ? `
+                            <button onclick="approvePayment('${p.id}', '${p.schoolId}', ${p.amount})" class="action-btn bg-green-500 text-white"><i class="fas fa-check"></i> Approve</button>
+                            <button onclick="rejectPayment('${p.id}', '${p.schoolId}')" class="action-btn bg-red-500 text-white"><i class="fas fa-times"></i> Reject</button>
+                        ` : ''}
+                        <button onclick="openEditPaymentModal('${p.id}', '${p.schoolId}', '${p.schoolName}', ${p.amount}, '${p.status}')" class="action-btn bg-orange-500 text-white"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="viewPaymentDetails('${p.id}')" class="action-btn bg-blue-500 text-white"><i class="fas fa-info-circle"></i> Details</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // Edit Payment Status Modal Functions
+    let currentEditPaymentId = null;
+    let currentEditSchoolId = null;
+    
+    function openEditPaymentModal(paymentId, schoolId, schoolName, amount, currentStatus) {
+        currentEditPaymentId = paymentId;
+        currentEditSchoolId = schoolId;
+        document.getElementById('editPaymentId').value = paymentId;
+        document.getElementById('editPaymentSchoolId').value = schoolId;
+        document.getElementById('editPaymentAmount').value = `Ksh ${amount.toLocaleString()}`;
+        document.getElementById('editPaymentSchool').value = schoolName;
+        document.getElementById('editPaymentStatusSelect').value = currentStatus;
+        document.getElementById('editPaymentStatusModal').classList.remove('hidden');
+        document.getElementById('editPaymentStatusModal').classList.add('flex');
+    }
+    
+    function closeEditPaymentModal() {
+        document.getElementById('editPaymentStatusModal').classList.add('hidden');
+    }
+    
+    async function savePaymentStatusEdit() {
+        const paymentId = document.getElementById('editPaymentId').value;
+        const schoolId = document.getElementById('editPaymentSchoolId').value;
+        const newStatus = document.getElementById('editPaymentStatusSelect').value;
+        
+        if (!confirm(`Change payment status to ${newStatus.toUpperCase()}?`)) return;
+        
+        try {
+            await db.collection('schools').doc(schoolId).collection('payments').doc(paymentId).update({ 
+                status: newStatus, 
+                updatedAt: new Date().toISOString() 
+            });
+            
+            // If approving, update school's total paid
+            if (newStatus === 'approved') {
+                const payment = allPayments.find(p => p.id === paymentId);
+                if (payment) {
+                    const schoolDoc = await db.collection('schools').doc(schoolId).get();
+                    const currentTotal = schoolDoc.data()?.totalPaid || 0;
+                    await db.collection('schools').doc(schoolId).update({ 
+                        totalPaid: currentTotal + (payment.amount || 0),
+                        balance: Math.max(0, (schoolDoc.data()?.balance || 0) - (payment.amount || 0))
+                    });
+                }
+            }
+            
+            closeEditPaymentModal();
+            await loadAllData();
+            showToast(`Payment status updated to ${newStatus}`, 'success');
+        } catch (error) {
+            showToast('Error updating status: ' + error.message, 'error');
+        }
+    }
+
+    // ==================== SCHOOLS RENDER ====================
+    function renderSchools() {
+        const search = document.getElementById('searchSchools')?.value.toLowerCase() || '';
+        const regionFilter = document.getElementById('filterSchoolRegion')?.value || 'all';
+        const contractFilter = document.getElementById('filterContractStatus')?.value || 'all';
+        let filtered = allSchools.filter(s => (!search || s.schoolName?.toLowerCase().includes(search)) && (regionFilter === 'all' || s.region === regionFilter) && (contractFilter === 'all' || s.contractStatus === contractFilter));
+        document.getElementById('totalSchools').innerText = allSchools.length;
+        const tbody = document.getElementById('schoolsTableBody');
+        if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8">No schools found</td></table>'; return; }
+        tbody.innerHTML = filtered.map(s => `<tr><td class="font-medium">${s.schoolName || '-'}</td><td>${s.principalName || '-'}</td><td>${s.email || '-'}</td><td>${s.phone || '-'}</td><td>${s.region || '-'}</td><td><span class="status-badge ${(s.currentMile || 1) >= 4 ? 'status-approved' : 'status-pending'}">Mile ${s.currentMile || 1}/4</span></td><td><span class="status-badge ${s.contractStatus === 'approved' ? 'status-approved' : 'status-pending'}">${s.contractStatus === 'approved' ? '✅ Approved' : '⏳ Pending'}</span></td><td>Ksh ${(s.totalPaid || 0).toLocaleString()}</td><td><button onclick="openEditSchoolModal('${s.id}')" class="action-btn bg-orange-500 text-white"><i class="fas fa-edit"></i> Edit</button></td></tr>`).join('');
+    }
+
+    // ==================== SCRIPTS RENDER ====================
+    function renderScripts() {
+        const search = document.getElementById('searchScripts')?.value.toLowerCase() || '';
+        let filtered = allScripts.filter(s => (!search || s.schoolName?.toLowerCase().includes(search) || s.genre?.toLowerCase().includes(search)));
+        const tbody = document.getElementById('scriptsTableBody');
+        if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8">No scripts found</td></tr>'; return; }
+        tbody.innerHTML = filtered.map(s => `<tr><td class="font-medium">${s.schoolName || '-'}</td><td>${s.genre || 'Music Item'}</td><td>${s.scriptUrl ? `<a href="${s.scriptUrl}" target="_blank" class="text-blue-500 hover:underline">View Script</a>` : '<span class="text-gray-400">Not assigned</span>'}</td><td><span class="status-badge ${s.status === 'assigned' ? 'status-approved' : 'status-pending'}">${s.status === 'assigned' ? '✅ Assigned' : '⏳ Pending'}</span></td><td class="text-xs">${s.assignedAt ? new Date(s.assignedAt).toLocaleDateString() : '-'}</td><td><button onclick="openAssignModal('${s.id}', '${s.schoolId}', '${s.genre || ''}')" class="action-btn bg-orange-500 text-white"><i class="fas fa-upload"></i> Assign</button></td></tr>`).join('');
+    }
+
+    // ==================== PROGRESS RENDER ====================
+    function renderProgress() {
+        const search = document.getElementById('searchProgress')?.value.toLowerCase() || '';
+        const mileFilter = document.getElementById('filterProgressMile')?.value || 'all';
+        let filtered = allSchools.filter(s => (!search || s.schoolName?.toLowerCase().includes(search)) && (mileFilter === 'all' || s.currentMile == mileFilter));
+        const container = document.getElementById('progressCardsContainer');
+        if (!filtered.length) { container.innerHTML = '<div class="text-center py-8 text-gray-500">No schools found</div>'; return; }
+        container.innerHTML = filtered.map(s => `<div class="dashboard-card"><div class="flex justify-between items-start"><div><h3 class="font-bold text-lg">${s.schoolName || '-'}</h3><p class="text-sm text-gray-500">${s.region || 'Unknown region'} | ${s.email || 'No email'}</p></div><span class="status-badge ${s.contractStatus === 'approved' ? 'status-approved' : 'status-pending'}">${s.contractStatus === 'approved' ? '✅ Contract Approved' : '⏳ Contract Pending'}</span></div><div class="mt-3"><div class="flex justify-between text-sm mb-1"><span>Progress: Mile ${s.currentMile || 1} of 4</span><span>${Math.round(((s.currentMile || 1) / 4) * 100)}% Complete</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${((s.currentMile || 1) / 4) * 100}%"></div></div></div><div class="mt-3 flex gap-2"><button onclick="openEditSchoolModal('${s.id}')" class="action-btn bg-orange-500 text-white"><i class="fas fa-edit"></i> Edit Progress</button></div></div>`).join('');
+    }
+
+    // ==================== ENROLLMENTS RENDER ====================
+    function renderEnrollments() {
+        const search = document.getElementById('searchEnrollments')?.value.toLowerCase() || '';
+        const statusFilter = document.getElementById('filterEnrollmentStatus')?.value || 'all';
+        const regionFilter = document.getElementById('filterEnrollmentRegion')?.value || 'all';
+        let filtered = allEnrollments.filter(e => (!search || e.schoolName?.toLowerCase().includes(search) || e.email?.toLowerCase().includes(search)) && (statusFilter === 'all' || e.status === statusFilter) && (regionFilter === 'all' || e.region === regionFilter));
+        const tbody = document.getElementById('enrollmentsTableBody');
+        if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8">No enrollments found</td></tr>'; return; }
+        tbody.innerHTML = filtered.map(e => `<tr><td class="font-medium">${e.schoolName || '-'}</td><td>${e.principalName || '-'}</td><td>${e.email || '-'}</td><td>${e.phone || '-'}</td><td>${e.region || '-'}</td><td class="text-xs">${e.programInterest || '-'}</td><td class="text-xs">${e.dateSubmitted?.slice(0,10) || '-'}</td><td><select onchange="updateEnrollmentStatus('${e.id}', this.value)" class="status-select ${e.status === 'Approved' ? 'status-approved' : e.status === 'Contacted' ? 'status-contacted' : e.status === 'Rejected' ? 'status-rejected' : 'status-pending'}"><option value="New" ${e.status === 'New' ? 'selected' : ''}>🟡 New</option><option value="Contacted" ${e.status === 'Contacted' ? 'selected' : ''}>🔵 Contacted</option><option value="Approved" ${e.status === 'Approved' ? 'selected' : ''}>🟢 Approved</option><option value="Rejected" ${e.status === 'Rejected' ? 'selected' : ''}>🔴 Rejected</option></select></td><td><button onclick="viewEnrollmentDetails('${e.id}')" class="action-btn bg-blue-500 text-white"><i class="fas fa-eye"></i> View</button></td></tr>`).join('');
+    }
+
+    async function updateEnrollmentStatus(id, status) { await db.collection('enrollments').doc(id).update({ status: status, updatedAt: new Date().toISOString() }); loadEnrollments(); showToast(`Status updated to ${status}`, 'success'); }
+    function viewEnrollmentDetails(id) { const e = allEnrollments.find(e => e.id === id); if(e) alert(`📋 Enrollment Details\n\nSchool: ${e.schoolName}\nPrincipal: ${e.principalName}\nEmail: ${e.email}\nPhone: ${e.phone}\nRegion: ${e.region}\nPackage: ${e.programInterest}\nStatus: ${e.status}\nMessage: ${e.message || 'N/A'}`); }
+
+    // ==================== RECYCLE BIN ====================
+    function renderRecycleBin() { 
+        document.getElementById('recycleBadge').classList.toggle('hidden', allDeleted.length === 0); 
+        if(allDeleted.length) document.getElementById('recycleBadge').innerText = allDeleted.length;
+        const tbody = document.getElementById('recycleTableBody');
+        if (!allDeleted.length) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8">No deleted items</td></tr>'; return; }
+        tbody.innerHTML = allDeleted.map(d => `<tr><td><span class="status-badge bg-gray-100">${d.type}</span></td><td class="font-medium">${d.name || '-'}</td><td class="text-sm text-gray-500">${d.details || '-'}</td><td class="text-xs">${d.deletedAt ? new Date(d.deletedAt).toLocaleString() : '-'}</td><td><button onclick="restoreItem('${d.id}')" class="action-btn bg-green-500 text-white"><i class="fas fa-undo-alt"></i> Restore</button><button onclick="permanentDelete('${d.id}')" class="action-btn bg-red-600 text-white"><i class="fas fa-trash-alt"></i> Delete</button></td></tr>`).join('');
+    }
+    async function restoreItem(itemId) { await db.collection('deleted_items').doc(itemId).delete(); loadAllData(); showToast('Item restored', 'success'); }
+    async function permanentDelete(itemId) { if(confirm('Permanently delete this item?')){ await db.collection('deleted_items').doc(itemId).delete(); loadAllData(); showToast('Item deleted permanently', 'success'); } }
+    async function clearAllDeleted() { if(confirm('⚠️ Empty entire recycle bin? This cannot be undone.')){ const batch = db.batch(); allDeleted.forEach(item => batch.delete(db.collection('deleted_items').doc(item.id))); await batch.commit(); loadAllData(); showToast('Recycle bin emptied', 'success'); } }
+
+    // ==================== PAYMENT ACTIONS ====================
+    function viewReceipt(base64Url) { 
+        document.getElementById('receiptImage').src = base64Url; 
+        document.getElementById('receiptModal').classList.remove('hidden'); 
+        document.getElementById('receiptModal').classList.add('flex');
+    }
+    function closeReceiptModal() { document.getElementById('receiptModal').classList.add('hidden'); }
+    function viewPaymentDetails(id) { const p = allPayments.find(p => p.id === id); if(p) alert(`📋 Payment Details\n\nSchool: ${p.schoolName}\nAmount: Ksh ${p.amount}\nMethod: ${p.paymentMethod}\nReference: ${p.reference}\nDate: ${new Date(p.paymentDate).toLocaleString()}\nStatus: ${p.status}`); }
+    async function approvePayment(paymentId, schoolId, amount) { if(!confirm(`Approve Ksh ${amount.toLocaleString()}?`)) return; await db.collection('schools').doc(schoolId).collection('payments').doc(paymentId).update({ status: 'approved', approvedAt: new Date().toISOString() }); const schoolDoc = await db.collection('schools').doc(schoolId).get(); await db.collection('schools').doc(schoolId).update({ totalPaid: (schoolDoc.data()?.totalPaid || 0) + amount, balance: Math.max(0, (schoolDoc.data()?.balance || 0) - amount) }); loadAllData(); showToast('Payment approved!', 'success'); }
+    async function rejectPayment(paymentId, schoolId) { if(!confirm('Reject this payment?')) return; await db.collection('schools').doc(schoolId).collection('payments').doc(paymentId).update({ status: 'rejected', rejectedAt: new Date().toISOString() }); loadAllData(); showToast('Payment rejected', 'warning'); }
+
+    // ==================== SCHOOL ACTIONS ====================
+    function openEditSchoolModal(id) { const s = allSchools.find(s => s.id === id); if(!s) return; document.getElementById('editSchoolId').value = id; document.getElementById('editSchoolName').value = s.schoolName || ''; document.getElementById('editPrincipalName').value = s.principalName || ''; document.getElementById('editPhone').value = s.phone || ''; document.getElementById('editCurrentMile').value = s.currentMile || 1; document.getElementById('editContractStatus').value = s.contractStatus || 'pending'; document.getElementById('editSchoolModal').classList.remove('hidden'); document.getElementById('editSchoolModal').classList.add('flex'); }
+    async function saveSchoolEdit() { const id = document.getElementById('editSchoolId').value; await db.collection('schools').doc(id).update({ schoolName: document.getElementById('editSchoolName').value, principalName: document.getElementById('editPrincipalName').value, phone: document.getElementById('editPhone').value, currentMile: parseInt(document.getElementById('editCurrentMile').value), contractStatus: document.getElementById('editContractStatus').value, updatedAt: new Date().toISOString() }); closeEditModal(); loadAllData(); showToast('School updated!', 'success'); }
+    function closeEditModal() { document.getElementById('editSchoolModal').classList.add('hidden'); }
+
+    // ==================== SCRIPT ACTIONS ====================
+    function openAssignModal(itemId, schoolId, currentGenre) { document.getElementById('assignScriptId').value = itemId; document.getElementById('assignSchoolId').value = schoolId; document.getElementById('scriptUrl').value = ''; document.getElementById('scriptGenre').value = currentGenre || ''; document.getElementById('assignScriptModal').classList.remove('hidden'); document.getElementById('assignScriptModal').classList.add('flex'); }
+    function closeAssignModal() { document.getElementById('assignScriptModal').classList.add('hidden'); }
+    async function saveScriptAssignment() { const itemId = document.getElementById('assignScriptId').value; const schoolId = document.getElementById('assignSchoolId').value; const scriptUrl = document.getElementById('scriptUrl').value; const genre = document.getElementById('scriptGenre').value; if(!scriptUrl) { showToast('Enter script URL', 'error'); return; } await db.collection('schools').doc(schoolId).collection('items').doc(itemId).update({ scriptUrl: scriptUrl, genre: genre || 'Assigned Script', status: 'assigned', assignedAt: new Date().toISOString() }); closeAssignModal(); loadAllData(); showToast('Script assigned!', 'success'); }
+
+    // ==================== REPORTS ====================
+    function showReports() { 
+        const modal = document.getElementById('reportsModal'); 
+        modal.classList.remove('hidden'); modal.classList.add('flex'); 
+        setTimeout(() => { 
+            const paymentStatus = { pending:0, approved:0, rejected:0 };
+            const enrollmentStatus = { New:0, Contacted:0, Approved:0, Rejected:0 };
+            const regionCounts = {}; const mileCounts = {1:0,2:0,3:0,4:0};
+            allPayments.forEach(p => { paymentStatus[p.status] = (paymentStatus[p.status] || 0) + 1; });
+            allEnrollments.forEach(e => { enrollmentStatus[e.status] = (enrollmentStatus[e.status] || 0) + 1; regionCounts[e.region] = (regionCounts[e.region] || 0) + 1; });
+            allSchools.forEach(s => { mileCounts[s.currentMile || 1]++; regionCounts[s.region] = (regionCounts[s.region] || 0) + 1; });
+            if(charts.payment) charts.payment.destroy(); if(charts.enrollment) charts.enrollment.destroy(); if(charts.region) charts.region.destroy(); if(charts.mile) charts.mile.destroy();
+            charts.payment = new Chart(document.getElementById('paymentChart'),{ type:'doughnut', data:{ labels:Object.keys(paymentStatus), datasets:[{ data:Object.values(paymentStatus), backgroundColor:['#f59e0b','#10b981','#ef4444'] }] } });
+            charts.enrollment = new Chart(document.getElementById('enrollmentChart'),{ type:'doughnut', data:{ labels:Object.keys(enrollmentStatus), datasets:[{ data:Object.values(enrollmentStatus), backgroundColor:['#3b82f6','#8b5cf6','#10b981','#ef4444'] }] } });
+            charts.region = new Chart(document.getElementById('regionChart'),{ type:'bar', data:{ labels:Object.keys(regionCounts), datasets:[{ label:'Count', data:Object.values(regionCounts), backgroundColor:'#e68a2e' }] } });
+            charts.mile = new Chart(document.getElementById('mileChart'),{ type:'bar', data:{ labels:['Mile 1','Mile 2','Mile 3','Mile 4'], datasets:[{ label:'Schools', data:[mileCounts[1],mileCounts[2],mileCounts[3],mileCounts[4]], backgroundColor:'#e68a2e' }] } });
+        }, 100); 
+    }
+    function closeReports() { document.getElementById('reportsModal').classList.add('hidden'); }
+
+    // ==================== EXPORTS ====================
+    function exportPaymentsCSV() { let csv = "School,Amount,Method,Reference,Date,Status\n"; allPayments.forEach(p => csv += `"${p.schoolName}","${p.amount}","${p.paymentMethod}","${p.reference}","${p.paymentDate}","${p.status}"\n`); downloadCSV(csv, `payments_${new Date().toISOString().slice(0,10)}.csv`); showToast('Payments exported', 'success'); }
+    function exportSchoolsCSV() { let csv = "School,Principal,Email,Phone,Region,Mile,Contract,Total Paid\n"; allSchools.forEach(s => csv += `"${s.schoolName}","${s.principalName}","${s.email}","${s.phone}","${s.region}","Mile ${s.currentMile || 1}","${s.contractStatus}","${s.totalPaid || 0}"\n`); downloadCSV(csv, `schools_${new Date().toISOString().slice(0,10)}.csv`); showToast('Schools exported', 'success'); }
+    function exportScriptsCSV() { let csv = "School,Script,Status,Assigned Date,URL\n"; allScripts.forEach(s => csv += `"${s.schoolName}","${s.genre}","${s.status}","${s.assignedAt || ''}","${s.scriptUrl || ''}"\n`); downloadCSV(csv, `scripts_${new Date().toISOString().slice(0,10)}.csv`); showToast('Scripts exported', 'success'); }
+    function exportEnrollmentsCSV() { let csv = "School,Principal,Email,Phone,Region,Package,Date,Status\n"; allEnrollments.forEach(e => csv += `"${e.schoolName}","${e.principalName}","${e.email}","${e.phone}","${e.region}","${e.programInterest}","${e.dateSubmitted?.slice(0,10)}","${e.status}"\n`); downloadCSV(csv, `enrollments_${new Date().toISOString().slice(0,10)}.csv`); showToast('Enrollments exported', 'success'); }
+    function downloadCSV(csv, filename) { const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
+    function refreshAllData() { loadAllData(); showToast('All data refreshed', 'success'); }
+    function switchToTab(tabId) { document.querySelector(`.tab-btn[data-tab="${tabId}"]`).click(); }
+    function updateStats() { document.getElementById('totalSchools').innerText = allSchools.length; }
+    function logout() { auth.signOut(); showToast('Logged out', 'success'); }
+    function showToast(msg, type) { const toast = document.createElement('div'); toast.className = `toast ${type === 'error' ? 'bg-red-600' : 'bg-green-600'}`; toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle'} mr-2"></i>${msg}`; document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000); }
+
+    // Tab Switching
+    document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden')); document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden'); }); });
+    document.querySelector('.tab-btn')?.click();
+
+    // Event Listeners
+    document.getElementById('searchPayments')?.addEventListener('keyup', renderPayments);
+    document.getElementById('filterPaymentStatus')?.addEventListener('change', renderPayments);
+    document.getElementById('filterPaymentMethod')?.addEventListener('change', renderPayments);
+    document.getElementById('searchSchools')?.addEventListener('keyup', renderSchools);
+    document.getElementById('filterSchoolRegion')?.addEventListener('change', renderSchools);
+    document.getElementById('filterContractStatus')?.addEventListener('change', renderSchools);
+    document.getElementById('searchScripts')?.addEventListener('keyup', renderScripts);
+    document.getElementById('searchProgress')?.addEventListener('keyup', renderProgress);
+    document.getElementById('filterProgressMile')?.addEventListener('change', renderProgress);
+    document.getElementById('searchEnrollments')?.addEventListener('keyup', renderEnrollments);
+    document.getElementById('filterEnrollmentStatus')?.addEventListener('change', renderEnrollments);
+    document.getElementById('filterEnrollmentRegion')?.addEventListener('change', renderEnrollments);
+</script>
+</body>
+</html>
