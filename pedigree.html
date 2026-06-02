@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWCS | Our Pedigree - Kenya Music Festival Champions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gold-gradient { background: linear-gradient(135deg, #C9A03D 0%, #E4C06E 40%, #F9E2A1 100%); }
+    .award-card { transition: all 0.3s ease; }
+    .award-card:hover { transform: translateY(-5px); }
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #e68a2e, #f59e0b);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .filter-chip {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: #e68a2e;
+      color: white;
+    }
+    .year-card {
+      transition: all 0.3s ease;
+    }
+    .year-card:hover {
+      transform: translateX(5px);
+      border-left-color: #e68a2e;
+    }
+    .pedigree-hero {
+      background-image: url('NEW IMG.jpeg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .pedigree-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+      border-radius: 2rem;
+    }
+    .medal-count {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md">
+    <div class="max-w-7xl mx-auto px-5 py-3">
+      <div class="flex justify-between items-center flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="flex items-center gap-2">
+            <i class="fas fa-music text-2xl text-orange-600"></i>
+            <span class="font-black text-xl text-gray-800">MWCS<span class="text-orange-600">.</span></span>
+          </a>
+        </div>
+        <div class="hidden md:flex gap-2 text-sm font-semibold items-center flex-wrap">
+          <a href="index.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white">🏠 Home</a>
+          <a href="about.html" class="px-4 py-2 rounded-full transition shadow-sm bg-blue-600 text-white">📖 About</a>
+          <a href="services.html" class="px-4 py-2 rounded-full transition shadow-sm bg-indigo-600 text-white">🎵 Services</a>
+          <a href="pedigree.html" class="px-4 py-2 rounded-full transition shadow-sm bg-purple-600 text-white">🏆 Pedigree</a>
+          <a href="investment.html" class="px-4 py-2 rounded-full transition shadow-sm bg-teal-600 text-white">💰 Investment</a>
+          <a href="pioneer.html" class="px-4 py-2 rounded-full transition shadow-sm bg-rose-600 text-white">👑 The Pioneer</a>
+          <a href="places.html" class="px-4 py-2 rounded-full transition shadow-sm bg-cyan-600 text-white">📍 Places</a>
+          <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden text-orange-800 text-2xl"><i class="fas fa-bars"></i></button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">...</div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-5 py-12">
+    <!-- Hero Section with Background -->
+    <div class="text-center mb-16 pedigree-hero rounded-2xl p-12 relative" data-aos="fade-up">
+      <div class="relative z-10">
+        <h1 class="text-5xl md:text-6xl font-black text-white mb-4">The <span class="gold-gradient bg-clip-text text-transparent">MWCS Pedigree</span></h1>
+        <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full mb-6"></div>
+        <p class="text-gray-200 text-lg max-w-2xl mx-auto">A legacy of excellence at the Kenya National Music Festival</p>
+      </div>
+    </div>
+
+    <!-- Stats Banner - Enhanced -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16" data-aos="fade-up">
+      <div class="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-4xl font-bold text-orange-600">45+</div>
+        <div class="text-xs text-gray-500 mt-1">SCHOOLS SERVED</div>
+        <div class="text-green-500 text-sm mt-2"><i class="fas fa-arrow-up"></i> +12 this year</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-4xl font-bold text-orange-600">97%</div>
+        <div class="text-xs text-gray-500 mt-1">SUCCESS RATE</div>
+        <div class="text-green-500 text-sm mt-2"><i class="fas fa-chart-line"></i> To Nationals</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-4xl font-bold text-orange-600">12</div>
+        <div class="text-xs text-gray-500 mt-1">NATIONAL AWARDS</div>
+        <div class="flex justify-center gap-2 mt-2">
+          <span class="text-yellow-500 text-sm">🥇 5 Gold</span>
+          <span class="text-gray-400 text-sm">🥈 4 Silver</span>
+          <span class="text-amber-600 text-sm">🥉 3 Bronze</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition cursor-pointer">
+        <div class="text-4xl font-bold text-orange-600">8</div>
+        <div class="text-xs text-gray-500 mt-1">REGIONS</div>
+        <div class="text-green-500 text-sm mt-2">Nationwide coverage</div>
+      </div>
+    </div>
+
+    <!-- Medal Count Row -->
+    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6 mb-16" data-aos="fade-up">
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <div class="medal-count text-yellow-600">🥇 5</div>
+          <p class="text-sm font-semibold">Gold Medals</p>
+        </div>
+        <div>
+          <div class="medal-count text-gray-500">🥈 4</div>
+          <p class="text-sm font-semibold">Silver Medals</p>
+        </div>
+        <div>
+          <div class="medal-count text-amber-700">🥉 3</div>
+          <p class="text-sm font-semibold">Bronze Medals</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Award Filter -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12" data-aos="fade-up">
+      <button class="filter-chip px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition active" data-filter="all">🏆 All Awards</button>
+      <button class="filter-chip px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-filter="gold">🥇 Gold Medals</button>
+      <button class="filter-chip px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-filter="script">📝 Best Script</button>
+      <button class="filter-chip px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-filter="director">🎭 Best Director</button>
+      <button class="filter-chip px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-orange-500 hover:text-white transition" data-filter="performance">⭐ Outstanding Performance</button>
+    </div>
+
+    <!-- Achievement Cards -->
+    <div class="grid md:grid-cols-2 gap-8 mb-16" data-aos="fade-up">
+      <div class="bg-white rounded-2xl p-8 shadow-lg award-card cursor-pointer" data-award="gold">
+        <i class="fas fa-trophy text-5xl text-orange-600 mb-4"></i>
+        <h2 class="text-2xl font-bold mb-3">National Festival Champions</h2>
+        <p class="text-gray-600 leading-relaxed">Our partner schools have consistently won top positions at the Kenya National Music Festival across multiple categories including Drama, Choral Verse, and Traditional Narratives.</p>
+        <div class="mt-5 pt-4 border-t border-orange-100">
+          <span class="text-orange-600 font-semibold">Achievements:</span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">🥇 Gold Medalists</span>
+            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Best Original Script</span>
+            <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Top Director Awards</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-lg award-card cursor-pointer" data-award="script">
+        <i class="fas fa-feather-alt text-5xl text-orange-600 mb-4"></i>
+        <h2 class="text-2xl font-bold mb-3">Award-Winning Scripts</h2>
+        <p class="text-gray-600 leading-relaxed">Our original scripts have won numerous awards for creativity, cultural relevance, and artistic excellence. Each script is tailored to the school's unique strengths.</p>
+        <div class="mt-5 pt-4 border-t border-orange-100">
+          <span class="text-orange-600 font-semibold">Achievements:</span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Best Script Awards</span>
+            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Top Scoring Items</span>
+            <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Judges' Commendations</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-lg award-card cursor-pointer" data-award="director">
+        <i class="fas fa-chalkboard-user text-5xl text-orange-600 mb-4"></i>
+        <h2 class="text-2xl font-bold mb-3">Professional Directing Excellence</h2>
+        <p class="text-gray-600 leading-relaxed">Our directors bring decades of combined experience, having coached multiple national champions and festival winners across Kenya.</p>
+        <div class="mt-5 pt-4 border-t border-orange-100">
+          <span class="text-orange-600 font-semibold">Achievements:</span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Best Director Awards</span>
+            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Outstanding Performance Recognition</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-8 shadow-lg award-card cursor-pointer" data-award="performance">
+        <i class="fas fa-chart-line text-5xl text-orange-600 mb-4"></i>
+        <h2 class="text-2xl font-bold mb-3">Unmatched Success Rate</h2>
+        <p class="text-gray-600 leading-relaxed">97% of our partner schools advance to the National level — a testament to our comprehensive training methodology and expert guidance.</p>
+        <div class="mt-5 pt-4 border-t border-orange-100">
+          <span class="text-orange-600 font-semibold">Achievements:</span>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Highest Advancement Rate in Kenya</span>
+            <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Consistent Top 10 Rankings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Year-by-Year Breakdown -->
+    <div class="bg-white rounded-2xl p-8 shadow-md mb-16" data-aos="fade-up">
+      <h3 class="text-2xl font-bold text-center mb-8">Year-by-Year <span class="text-orange-600">Achievements</span></h3>
+      <div class="space-y-4 max-w-3xl mx-auto">
+        <div class="year-card border-l-4 border-gray-200 pl-4 py-3 hover:border-orange-500 transition cursor-pointer">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-lg">🏆 2025</span>
+            <span class="text-orange-600 font-semibold">3 Awards</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">Thika TTI - English Play & Narrative (Nationals) | Murang'a TTC - Choral Verse (Nationals)</p>
+        </div>
+        <div class="year-card border-l-4 border-gray-200 pl-4 py-3 hover:border-orange-500 transition cursor-pointer">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-lg">🏆 2024</span>
+            <span class="text-orange-600 font-semibold">5 Awards</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">Murang'a TTC - Gold (Choral Verses) | Karoti Girls' - Gold (English Elocution) | Mathaithi Girls' - Silver (Narrative) | Maeni Girls' - Bronze (Cultural Dance)</p>
+        </div>
+        <div class="year-card border-l-4 border-gray-200 pl-4 py-3 hover:border-orange-500 transition cursor-pointer">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-lg">🏆 2023</span>
+            <span class="text-orange-600 font-semibold">4 Awards</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">St. Ann Lifred - Gold (English Elocution) | Kagongo Primary - Silver (Narrative) | Karoti Girls' - Bronze (Choral Verse)</p>
+        </div>
+        <div class="year-card border-l-4 border-gray-200 pl-4 py-3 hover:border-orange-500 transition cursor-pointer">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-lg">🏆 2022</span>
+            <span class="text-orange-600 font-semibold">3 Awards</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">Murang'a TTC - Silver (Public Speaking) | Various schools - Regional Champions</p>
+        </div>
+        <div class="year-card border-l-4 border-gray-200 pl-4 py-3 hover:border-orange-500 transition cursor-pointer">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <span class="font-bold text-lg">🏆 2021</span>
+            <span class="text-orange-600 font-semibold">2 Awards</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">First MWCS school reaches National Finals | Best Newcomer Award</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Stories Carousel -->
+    <div class="bg-gradient-to-r from-orange-50 to-white rounded-2xl p-8 mb-16" data-aos="zoom-in">
+      <h3 class="text-2xl font-bold text-center mb-8">🎤 Success Stories</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow-md text-center hover:shadow-lg transition cursor-pointer">
+          <i class="fas fa-quote-left text-3xl text-orange-400 mb-4"></i>
+          <p class="italic text-gray-600 text-sm">"From never qualifying to winning 2nd place at Nationals in just one year! MWCS transformed our entire music department."</p>
+          <p class="font-bold mt-4 text-orange-600">- Murang'a TTC Principal</p>
+          <div class="mt-2 flex justify-center gap-1 text-yellow-400">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow-md text-center hover:shadow-lg transition cursor-pointer">
+          <i class="fas fa-quote-left text-3xl text-orange-400 mb-4"></i>
+          <p class="italic text-gray-600 text-sm">"The scripts provided were exceptional. Our students performed with confidence and won Gold. Worth every shilling."</p>
+          <p class="font-bold mt-4 text-orange-600">- Karoti Girls' High</p>
+          <div class="mt-2 flex justify-center gap-1 text-yellow-400">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-6 shadow-md text-center hover:shadow-lg transition cursor-pointer">
+          <i class="fas fa-quote-left text-3xl text-orange-400 mb-4"></i>
+          <p class="italic text-gray-600 text-sm">"Professional, reliable, and results-driven. MWCS is the best investment we made for our school's arts program."</p>
+          <p class="font-bold mt-4 text-orange-600">- St. Ann Lifred</p>
+          <div class="mt-2 flex justify-center gap-1 text-yellow-400">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Performing Schools -->
+    <div class="bg-white rounded-2xl p-8 shadow-md mb-16" data-aos="fade-up">
+      <h3 class="text-2xl font-bold text-center mb-8">🏅 Top Performing <span class="text-orange-600">Partner Schools</span></h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
+          <span class="text-2xl">🥇</span>
+          <div>
+            <p class="font-bold">Murang'a TTC</p>
+            <p class="text-xs text-gray-500">2 Gold Medals | Nationals 2024, 2019</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
+          <span class="text-2xl">🥇</span>
+          <div>
+            <p class="font-bold">Karoti Girls' High</p>
+            <p class="text-xs text-gray-500">Gold Medal | English Elocution 2024</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
+          <span class="text-2xl">🥇</span>
+          <div>
+            <p class="font-bold">St. Ann Lifred</p>
+            <p class="text-xs text-gray-500">Gold Medal | English Elocution 2023</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
+          <span class="text-2xl">🥈</span>
+          <div>
+            <p class="font-bold">Thika TTI</p>
+            <p class="text-xs text-gray-500">Silver Medal | English Play & Narrative 2025</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
+          <span class="text-2xl">🥉</span>
+          <div>
+            <p class="font-bold">Maeni Girls' High</p>
+            <p class="text-xs text-gray-500">Bronze Medal | Cultural Dance 2024</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl">
+          <span class="text-2xl">🥉</span>
+          <div>
+            <p class="font-bold">Kagongo Primary</p>
+            <p class="text-xs text-gray-500">Bronze Medal | Narrative 2024</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonial Banner -->
+    <div class="bg-gradient-to-r from-orange-800 to-orange-900 rounded-2xl p-10 text-white text-center" data-aos="zoom-in">
+      <i class="fas fa-quote-left text-4xl text-orange-300 mb-4 opacity-70"></i>
+      <p class="text-xl md:text-2xl italic max-w-3xl mx-auto">"MWCS didn't just prepare us for the festival — they transformed our entire music department. We're now recognized as a top performing school in the region."</p>
+      <p class="mt-4 font-bold text-orange-200">— Principal, National Champion School</p>
+      <div class="mt-6 flex justify-center gap-2 flex-wrap">
+        <span class="bg-white/20 px-3 py-1 rounded-full text-sm">🏆 2024 Champions</span>
+        <span class="bg-white/20 px-3 py-1 rounded-full text-sm">⭐ 5 Gold Medals</span>
+        <span class="bg-white/20 px-3 py-1 rounded-full text-sm">📝 Best Script Awards</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 text-center" data-aos="fade-up">
+      <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="inline-block bg-gradient-to-r from-orange-600 to-orange-700 text-white px-8 py-3 rounded-full font-bold hover:from-orange-700 hover:to-orange-800 transition shadow-md">Join Our Champions →</a>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-5 text-center">
+      <p>© 2026 MWCS — Musical World Creative Society | Kenya Music Festival Consultants</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 800 });
+    
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+    
+    // Filter functionality
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const awardCards = document.querySelectorAll('.award-card');
+    
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach(c => c.classList.remove('active', 'bg-orange-500', 'text-white'));
+        chip.classList.add('active', 'bg-orange-500', 'text-white');
+        
+        const filter = chip.dataset.filter;
+        awardCards.forEach(card => {
+          if (filter === 'all' || card.dataset.award === filter) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    window.clearAndGoToDashboard = function(event) {
+      if (event) event.preventDefault();
+      localStorage.removeItem('userId');
+      localStorage.removeItem('schoolName');
+      sessionStorage.clear();
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.innerHTML = '<i class="fas fa-shield-alt mr-2"></i>Please login to access the school portal';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 100);
+      return false;
+    };
+  </script>
+</body>
+</html>
