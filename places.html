@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="LOGO1.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWCS | Festival Venues & Competition Locations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .place-card {
+      transition: all 0.3s ease;
+    }
+    .place-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.15);
+    }
+    .place-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 15px;
+    }
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #e68a2e, #f59e0b);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .award-badge {
+      display: inline-block;
+      background: #fef3c7;
+      color: #d97706;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .places-hero {
+      background-image: url('NEW IMG.jpeg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .places-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+      border-radius: 2rem;
+    }
+    .venue-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .venue-details.open {
+      max-height: 300px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navigation with Round Logo -->
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md">
+    <div class="max-w-7xl mx-auto px-5 py-3">
+      <div class="flex justify-between items-center flex-wrap gap-3">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="flex items-center gap-3 group">
+            <div class="relative">
+              <img src="LOGO1.png" alt="MWCS Logo" class="w-12 h-12 rounded-full object-cover shadow-md group-hover:scale-105 transition-transform duration-300">
+              <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white"></div>
+            </div>
+            <div class="hidden sm:block">
+              <span class="font-black text-xl text-gray-800 tracking-tight">MWCS<span class="text-orange-600">.</span></span>
+              <p class="text-[10px] text-gray-400 -mt-1 leading-tight">Musical World<br>Creative Society</p>
+            </div>
+          </a>
+        </div>
+        <div class="hidden md:flex gap-2 text-sm font-semibold items-center flex-wrap">
+          <a href="index.html" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white">🏠 Home</a>
+          <a href="about.html" class="px-4 py-2 rounded-full transition shadow-sm bg-blue-600 text-white">📖 About</a>
+          <a href="services.html" class="px-4 py-2 rounded-full transition shadow-sm bg-indigo-600 text-white">🎵 Services</a>
+          <a href="pedigree.html" class="px-4 py-2 rounded-full transition shadow-sm bg-purple-600 text-white">🏆 Pedigree</a>
+          <a href="investment.html" class="px-4 py-2 rounded-full transition shadow-sm bg-teal-600 text-white">💰 Investment</a>
+          <a href="pioneer.html" class="px-4 py-2 rounded-full transition shadow-sm bg-rose-600 text-white">👑 The Pioneer</a>
+          <a href="places.html" class="px-4 py-2 rounded-full transition shadow-sm bg-cyan-600 text-white">📍 Places</a>
+          <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="px-4 py-2 rounded-full transition shadow-sm bg-gray-600 text-white"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+        </div>
+        <button id="mobileMenuBtn" class="md:hidden text-orange-800 text-2xl"><i class="fas fa-bars"></i></button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-gray-100 flex flex-col gap-2">
+        <a href="index.html" class="bg-gray-600 text-white text-center px-4 py-2 rounded-full">🏠 Home</a>
+        <a href="about.html" class="bg-blue-600 text-white text-center px-4 py-2 rounded-full">📖 About</a>
+        <a href="services.html" class="bg-indigo-600 text-white text-center px-4 py-2 rounded-full">🎵 Services</a>
+        <a href="pedigree.html" class="bg-purple-600 text-white text-center px-4 py-2 rounded-full">🏆 Pedigree</a>
+        <a href="investment.html" class="bg-teal-600 text-white text-center px-4 py-2 rounded-full">💰 Investment</a>
+        <a href="pioneer.html" class="bg-rose-600 text-white text-center px-4 py-2 rounded-full">👑 The Pioneer</a>
+        <a href="places.html" class="bg-cyan-600 text-white text-center px-4 py-2 rounded-full">📍 Places</a>
+        <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="bg-gray-600 text-white text-center px-4 py-2 rounded-full"><i class="fas fa-sign-in-alt mr-1"></i> Portal</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-5 py-12">
+    <!-- Hero Section with Background -->
+    <div class="text-center mb-16 places-hero rounded-2xl p-12 relative" data-aos="fade-up">
+      <div class="relative z-10">
+        <h1 class="text-5xl md:text-6xl font-black text-white mb-4">Festival <span class="text-orange-400">Venues</span></h1>
+        <div class="w-24 h-1 bg-orange-500 mx-auto rounded-full mb-6"></div>
+        <p class="text-gray-200 text-lg max-w-2xl mx-auto">Iconic competition grounds where MWCS has guided schools to victory at the Kenya National Music Festival and Kenya National Drama & Film Festival</p>
+      </div>
+    </div>
+
+    <!-- Stats Banner -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white rounded-2xl p-5 shadow-md text-center mb-12" data-aos="fade-up">
+      <div><div class="text-2xl font-bold text-orange-700">45+</div><div class="text-xs text-gray-500">Schools Served</div></div>
+      <div class="border-l border-gray-200"><div class="text-2xl font-bold text-orange-700">97%</div><div class="text-xs text-gray-500">Success Rate</div></div>
+      <div class="border-l border-gray-200"><div class="text-2xl font-bold text-orange-700">12</div><div class="text-xs text-gray-500">National Awards</div></div>
+      <div class="border-l border-gray-200"><div class="text-2xl font-bold text-orange-700">8</div><div class="text-xs text-gray-500">Regions</div></div>
+    </div>
+
+    <!-- Interactive Map Section - FUNCTIONAL -->
+    <div class="bg-white rounded-2xl p-6 shadow-md mb-12" data-aos="fade-up">
+      <h3 class="text-xl font-bold mb-4 text-center">🗺️ MWCS Festival Footprint Across Kenya</h3>
+      <div class="rounded-xl overflow-hidden shadow-lg">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d255282.3581374377!2d36.70730703162846!3d-1.303207734306538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1172d84d49a7%3A0xf7cf0254b297924c!2sNairobi%2C%20Kenya!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+          width="100%" 
+          height="400" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      
+      <!-- Location Markers Legend -->
+      <div class="flex flex-wrap justify-center gap-6 mt-4">
+        <div class="flex items-center gap-2"><div class="w-3 h-3 bg-red-500 rounded-full"></div><span class="text-xs text-gray-600">MWCS Headquarters</span></div>
+        <div class="flex items-center gap-2"><div class="w-3 h-3 bg-blue-500 rounded-full"></div><span class="text-xs text-gray-600">Partner Schools</span></div>
+        <div class="flex items-center gap-2"><div class="w-3 h-3 bg-green-500 rounded-full"></div><span class="text-xs text-gray-600">Festival Venues</span></div>
+        <div class="flex items-center gap-2"><div class="w-3 h-3 bg-orange-500 rounded-full"></div><span class="text-xs text-gray-600">Training Centers</span></div>
+      </div>
+      
+      <!-- Key Locations List -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5 pt-4 border-t border-gray-100">
+        <div class="text-center"><p class="text-xs font-semibold">📍 Nairobi</p><p class="text-xs text-gray-400">St. Ann Lifred</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Thika</p><p class="text-xs text-gray-400">MWCS HQ | Thika TTI</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Murang'a</p><p class="text-xs text-gray-400">Murang'a TTC</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Karoti</p><p class="text-xs text-gray-400">Karoti Girls' High</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Mathaithi</p><p class="text-xs text-gray-400">Mathaithi Girls'</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Kakamega</p><p class="text-xs text-gray-400">Maeni Girls'</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Isiolo</p><p class="text-xs text-gray-400">Isiolo Girls'</p></div>
+        <div class="text-center"><p class="text-xs font-semibold">📍 Mombasa</p><p class="text-xs text-gray-400">Coast Region</p></div>
+      </div>
+      
+      <p class="text-center text-xs text-gray-400 mt-4"><i class="fas fa-info-circle mr-1"></i> 8 regions | 15+ venues | 45+ schools served across Kenya</p>
+    </div>
+
+    <!-- Places Visited Grid - Row 1 -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" data-aos="fade-up">
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="thika-hq.jpg" alt="Thika Town - MWCS Headquarters" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Thika+HQ'">
+        <h3 class="font-bold text-xl">Thika - MWCS HQ</h3>
+        <p class="text-gray-500 text-sm">Kiambu County - Central Region</p>
+        <p class="text-xs text-gray-400 mt-2">Frin Plaza - Training & Rehearsal Hub for multiple winning schools</p>
+        <div class="award-badge"><i class="fas fa-building mr-1"></i> Headquarters & Training Center</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+        <div class="venue-details mt-3 p-3 bg-gray-50 rounded-lg text-left hidden"><p class="text-xs"><strong>Achievements:</strong> 12+ schools trained here | 5 national champions prepared</p><p class="text-xs mt-1"><strong>Facilities:</strong> Rehearsal hall, recording studio, costume library</p></div>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="muranga-ttc.jpg" alt="Murang'a TTC" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Muranga+TTC'">
+        <h3 class="font-bold text-xl">Murang'a TTC</h3>
+        <p class="text-gray-500 text-sm">Murang'a County - Central Region</p>
+        <p class="text-xs text-gray-400 mt-2">Kenya National Music Festival - Nationals (2024, 2019)</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> Choral Verses & Public Speaking - Nationals</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+        <div class="venue-details mt-3 p-3 bg-gray-50 rounded-lg text-left hidden"><p class="text-xs"><strong>Year Venue Used:</strong> 2019, 2024</p><p class="text-xs"><strong>Awards Won:</strong> 2 Gold Medals, 1 Silver</p></div>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="karoti-girls.jpg" alt="Karoti Girls High School" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Karoti+Girls'">
+        <h3 class="font-bold text-xl">Karoti Girls' High</h3>
+        <p class="text-gray-500 text-sm">Central Region</p>
+        <p class="text-xs text-gray-400 mt-2">KNDFF - English Elocution (2024) | Music Festival (2024)</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> English Elocution & Play - Regionals/Nationals</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+        <div class="venue-details mt-3 p-3 bg-gray-50 rounded-lg text-left hidden"><p class="text-xs"><strong>Best Result:</strong> Gold Medal - English Elocution 2024</p><p class="text-xs"><strong>Student Participants:</strong> 15 students</p></div>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="st-ann-lifred.jpg" alt="St. Ann Lifred School" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=St.+Ann+Lifred'">
+        <h3 class="font-bold text-xl">St. Ann Lifred</h3>
+        <p class="text-gray-500 text-sm">Nairobi Region</p>
+        <p class="text-xs text-gray-400 mt-2">KNDFF - English Elocutions (2023)</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> English Elocutions - Nationals</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="thika-tti.jpg" alt="Thika Technical Institute" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Thika+TTI'">
+        <h3 class="font-bold text-xl">Thika TTI</h3>
+        <p class="text-gray-500 text-sm">Kiambu County - Central Region</p>
+        <p class="text-xs text-gray-400 mt-2">KNDFF 2025 - English Play & Narrative</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> English Play & Narrative - Nationals 2025</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="mathaithi-girls.jpg" alt="Mathaithi Girls High School" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Mathaithi+Girls'">
+        <h3 class="font-bold text-xl">Mathaithi Girls' High</h3>
+        <p class="text-gray-500 text-sm">Central Region</p>
+        <p class="text-xs text-gray-400 mt-2">KNDFF 2024 - Narrative, Spoken Word, Mime</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> Narrative, Spoken Word, Mime - Regionals</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+      </div>
+    </div>
+
+    <!-- Places Visited Grid - Row 2 -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" data-aos="fade-up">
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="maeni-girls.jpg" alt="Maeni Girls High School" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Maeni+Girls'">
+        <h3 class="font-bold text-xl">Maeni Girls' High</h3>
+        <p class="text-gray-500 text-sm">Western Region</p>
+        <p class="text-xs text-gray-400 mt-2">KNDFF 2024 - Narrative & Cultural Dance</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> Narrative & Cultural Dance - Regionals</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="kagongo-primary.jpg" alt="Kagongo Primary School" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Kagongo+Primary'">
+        <h3 class="font-bold text-xl">Kagongo Primary</h3>
+        <p class="text-gray-500 text-sm">Central Region</p>
+        <p class="text-xs text-gray-400 mt-2">English Elocution - 2023 | KNDFF 2024 - Narrative & Cultural Dance</p>
+        <div class="award-badge"><i class="fas fa-trophy mr-1"></i> Narrative & Cultural Dance - Regionals</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+      </div>
+      
+      <div class="bg-white rounded-2xl p-6 shadow-md place-card text-center">
+        <img src="isiolo-girls.jpg" alt="Isiolo Girls High School" class="place-img" onerror="this.src='https://placehold.co/600x350/fef3c7/d97706?text=Isiolo+Girls'">
+        <h3 class="font-bold text-xl">Isiolo Girls' High</h3>
+        <p class="text-gray-500 text-sm">Eastern Region</p>
+        <p class="text-xs text-gray-400 mt-2">Kenya National Music Festival 2025 - Partner School</p>
+        <div class="award-badge"><i class="fas fa-handshake mr-1"></i> Current Partner School</div>
+        <button class="mt-3 text-orange-600 text-xs hover:underline" onclick="toggleVenueDetails(this)">View Details ▼</button>
+      </div>
+    </div>
+
+    <!-- Festival Levels Section -->
+    <div class="bg-gradient-to-r from-blue-900 to-orange-800 rounded-2xl overflow-hidden mb-12" data-aos="zoom-in">
+      <div class="grid md:grid-cols-2">
+        <div class="p-8 text-white">
+          <i class="fas fa-chart-line text-4xl text-orange-300 mb-4"></i>
+          <h3 class="text-2xl font-bold mb-3">The Journey to Nationals</h3>
+          <p class="text-orange-100 mb-4">Kenya National Music Festival & Kenya National Drama & Film Festival</p>
+          <p class="text-sm text-orange-200 leading-relaxed">MWCS has successfully guided partner schools through every level of competition:</p>
+          <div class="mt-4 space-y-2">
+            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-green-300"></i><span>Subcounty Level</span></div>
+            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-green-300"></i><span>County Level</span></div>
+            <div class="flex items-center gap-3"><i class="fas fa-check-circle text-green-300"></i><span>Regional Level</span></div>
+            <div class="flex items-center gap-3"><i class="fas fa-trophy text-yellow-300"></i><span>National Level</span></div>
+          </div>
+        </div>
+        <div class="h-64 md:h-auto bg-gray-800 flex items-center justify-center">
+          <div class="text-center text-white/40"><i class="fas fa-music text-6xl mb-2"></i><i class="fas fa-theater-masks text-6xl"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events at These Venues -->
+    <div class="bg-orange-50 rounded-2xl p-6 mb-12" data-aos="fade-up">
+      <h3 class="text-xl font-bold mb-4 text-center">📅 Upcoming Festival Dates</h3>
+      <div class="space-y-3 max-w-2xl mx-auto">
+        <div class="flex justify-between items-center border-b pb-2"><span><i class="fas fa-calendar text-orange-600 mr-2"></i> Subcounty Level</span><span class="font-bold">June 2026</span><span class="text-sm text-gray-500">Various Venues</span></div>
+        <div class="flex justify-between items-center border-b pb-2"><span><i class="fas fa-calendar text-orange-600 mr-2"></i> County Level</span><span class="font-bold">July 2026</span><span class="text-sm text-gray-500">County HQs</span></div>
+        <div class="flex justify-between items-center border-b pb-2"><span><i class="fas fa-calendar text-orange-600 mr-2"></i> Regional Level</span><span class="font-bold">August 2026</span><span class="text-sm text-gray-500">Regional Centers</span></div>
+        <div class="flex justify-between items-center"><span><i class="fas fa-trophy text-orange-600 mr-2"></i> National Finals</span><span class="font-bold">September 2026</span><span class="text-sm text-gray-500">KICC, Nairobi</span></div>
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-white rounded-2xl p-8 shadow-md text-center" data-aos="fade-up">
+      <i class="fas fa-map-marked-alt text-4xl text-orange-600 mb-4"></i>
+      <h3 class="text-2xl font-bold mb-4">Your School Could Be Next</h3>
+      <p class="text-gray-600 mb-6 max-w-2xl mx-auto">Join 45+ schools that have trusted MWCS to guide them from preliminary levels to the National stage.</p>
+      <div class="flex flex-wrap justify-center gap-3 mb-6">
+        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm"><i class="fas fa-check-circle mr-1"></i> Murang'a TTC</span>
+        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm"><i class="fas fa-check-circle mr-1"></i> Karoti Girls'</span>
+        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm"><i class="fas fa-check-circle mr-1"></i> Thika TTI</span>
+        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm"><i class="fas fa-check-circle mr-1"></i> St. Ann Lifred</span>
+        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm"><i class="fas fa-check-circle mr-1"></i> Isiolo Girls'</span>
+      </div>
+      <a href="dashboard.html" onclick="return clearAndGoToDashboard(event)" class="inline-block bg-gradient-to-r from-orange-600 to-orange-700 text-white px-8 py-3 rounded-full font-semibold hover:from-orange-700 hover:to-orange-800 transition shadow-md">Start Your Journey →</a>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-5 text-center">
+      <p>© 2026 MWCS — Musical World Creative Society | Kenya's Premier Music Festival Consultants</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 800 });
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => { document.getElementById('mobileMenu').classList.toggle('hidden'); });
+    function toggleVenueDetails(btn) { const details = btn.nextElementSibling; details.classList.toggle('hidden'); btn.innerHTML = details.classList.contains('hidden') ? 'View Details ▼' : 'Hide Details ▲'; }
+    window.clearAndGoToDashboard = function(event) { if (event) event.preventDefault(); localStorage.removeItem('userId'); localStorage.removeItem('schoolName'); sessionStorage.clear(); const toast = document.createElement('div'); toast.className = 'toast-notification'; toast.innerHTML = '<i class="fas fa-shield-alt mr-2"></i>Please login to access the school portal'; document.body.appendChild(toast); setTimeout(() => { toast.style.animation = 'slideOut 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 2000); setTimeout(() => { window.location.href = 'dashboard.html'; }, 100); return false; };
+  </script>
+</body>
+</html>
